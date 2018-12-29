@@ -1,0 +1,35 @@
+@baseURL = http://127.0.0.1:5454/api
+@tagId = TAG1
+@tagName= TAG1
+
+###
+
+POST {{baseURL}}/tags 
+Content-Type: application/json
+
+{
+    "name" : "{{tagName}}"
+}
+
+###
+
+PUT  {{baseURL}}/tags/{{tagId}}
+Content-Type: application/x-www-form-urlencoded
+
+name=NEW TAG NAME
+&level=1
+&dummy=33
+
+###
+
+GET {{baseURL}}/tags
+
+
+###
+
+GET {{baseURL}}/tags/{{tagId}}
+
+###
+
+DELETE  {{baseURL}}/tags/{{tagId}}
+
