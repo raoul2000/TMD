@@ -1,0 +1,78 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Tag My Doc API",
+    "description": "This is a description",
+    "contact": {
+      "name": "raoul2000"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "http://opensource.org/licenses/MIT"
+    }
+  },
+  "host": "localost.api",
+  "schemes": [
+    "http"
+  ],
+  "basePath": "/api",
+  "tags": [
+    {
+      "name": "tags"
+    }
+  ],
+  "paths": {
+    "/tags": {
+      "get": {
+        "tags": [
+          "tags"
+        ],
+        "summary": "returns all tags",
+        "description": "return all tags in the current collection",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "tags"
+        ],
+        "summary": "create a tag",
+        "description": "create a single tag",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "formData",
+            "description": "Name of the tag to create",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "tag": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

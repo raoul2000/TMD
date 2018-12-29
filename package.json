@@ -35,6 +35,7 @@
     "nedb": "^1.8.0",
     "node-dir": "^0.1.17",
     "simple-statistics": "^6.1.1",
+    "swagger-ui-express": "^4.0.2",
     "yads": "^1.0.6"
   }
 }

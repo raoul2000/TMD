@@ -3,6 +3,8 @@ const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
 
 const storeLib = require('./store/store');
 
@@ -61,6 +63,7 @@ const startServer = (options) => new Promise( (resolve) => {
     app.use(bodyParser.json());
     app.use(express.static(dataPath));
     app.use(cors());
+    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
     // load middleware    
 
