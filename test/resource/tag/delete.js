@@ -57,7 +57,7 @@ describe("DELETE Tag endpoint", () => {
         request(server).
             delete('/api/tags/tag_NOT_FOUND').
             expect('Content-Type', /json/).
-            expect(httpStatusCode.OK).
+            expect(httpStatusCode.NOT_FOUND).
             then((resp) => {
                 assert.equal(resp.body.affectedRows , EXPECTED_VALUE);
                 done();

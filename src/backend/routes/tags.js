@@ -30,7 +30,15 @@ const register = (app, store) => {
             let {id} = req.params;
             tags.getById(id, store).
                 then(
-                    (responseBody) => res.json(responseBody),
+                    (responseBody) => {
+                        if( responseBody === null) {
+                            res.status(HttpStatus.NOT_FOUND).json({
+                                "errorMessage" : `no tag found with id : ${id}`
+                            });
+                        } else {
+                            res.json(responseBody);
+                        }
+                    },
                     (error) => helper.defaultErrorHandler(error,res)
                 );
         } catch (error) {
@@ -47,7 +55,15 @@ const register = (app, store) => {
             let {id} = req.params;
             tags.delete(id, store).
                 then(
-                    (responseBody) => res.json(responseBody),
+                    (responseBody) => {
+                        if( responseBody === 0) {
+                            res.status(HttpStatus.NOT_FOUND).json({
+                                "errorMessage" : `no tag found with id : ${id}`
+                            });
+                        } else {
+                            res.json(responseBody);
+                        }                        
+                    },
                     (error) => helper.defaultErrorHandler(error,res)
                 );
         } catch (error) {
@@ -84,8 +100,13 @@ const register = (app, store) => {
             tags.update(id, req.body, store).
                 then(
                     (responseBody) => {
-                        console.log(responseBody);
-                        res.json(responseBody);
+                        if( responseBody === null) {
+                            res.status(HttpStatus.NOT_FOUND).json({
+                                "errorMessage" : `no tag found with id : ${id}`
+                            });
+                        } else {
+                            res.json(responseBody);
+                        }
                     },
                     (error) => helper.defaultErrorHandler(error,res)
                 );

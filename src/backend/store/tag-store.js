@@ -5,7 +5,7 @@ const {assert} = require('../assert.js');
 const Tag = require('../model/tag.js');
 
 const convertId = (doc) => {
-    if( doc === null) {
+    if( doc === null || doc.hasOwnProperty('_id') === false) {
         return doc;
     }
     doc.id = doc['_id'];
@@ -142,6 +142,8 @@ TagStore.prototype.update = function (tagId, tagProperties) {
             (err, numberOfUpdated, affectedDocuments) => {
                 if(err) {
                     reject(err);
+                } else if( numberOfUpdated === 0 ) {
+                    resolve(null);
                 } else {
                     resolve(convertId(affectedDocuments));
                 }

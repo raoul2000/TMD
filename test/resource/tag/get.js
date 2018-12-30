@@ -71,9 +71,9 @@ describe("GET Tag endpoint", () => {
         request(server).
             get('/api/tags/tag1_NOT_FOUND').
             expect('Content-Type', /json/).
-            expect(httpStatusCode.OK).
+            expect(httpStatusCode.NOT_FOUND).
             then((resp) => {
-                assert.equal(resp.body , null);
+                assert.isTrue(resp.body.errorMessage.startsWith('no tag found'));
                 done();
             }).
             catch((err) => done(err));
