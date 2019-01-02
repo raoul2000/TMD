@@ -53,13 +53,13 @@ describe("DELETE Tag endpoint", () => {
     });    
 
     it('returns 0 when tag to delete is not found', function(done) {
-        const EXPECTED_VALUE = 0;
         request(server).
             delete('/api/tags/tag_NOT_FOUND').
             expect('Content-Type', /json/).
             expect(httpStatusCode.NOT_FOUND).
             then((resp) => {
-                assert.equal(resp.body.affectedRows , EXPECTED_VALUE);
+                assert.hasAnyKeys(resp.body, ["errorMessage"]);
+                assert.isTrue(resp.body.errorMessage.startsWith('no tag found with id') );
                 done();
             }).
             catch((err) => done(err));

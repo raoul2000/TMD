@@ -56,7 +56,7 @@ const register = (app, store) => {
             tags.delete(id, store).
                 then(
                     (responseBody) => {
-                        if( responseBody === 0) {
+                        if( responseBody.affectedRows === 0) {
                             res.status(HttpStatus.NOT_FOUND).json({
                                 "errorMessage" : `no tag found with id : ${id}`
                             });
