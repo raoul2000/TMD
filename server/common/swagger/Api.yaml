@@ -1,0 +1,143 @@
+swagger: "2.0"
+info:
+  version: 1.0.0
+  title: api-ts
+  description: My cool TypeScript app
+basePath: /api/v1
+tags:
+  - name: Examples
+    description: Simple example endpoints
+  - name: Tags
+    description: Tags Management endpoints
+  - name: Documents
+    description: Documents Management endpoints
+
+
+consumes:
+  - application/json
+produces:
+  - application/json
+
+
+definitions:
+  ExampleBody:
+    type: object
+    title: example
+    required:
+      - name
+    properties:
+      name:
+        type: string
+        example: no_stress
+
+paths:
+  /examples:
+    get:
+      tags:
+        - Examples
+      description: Fetch all examples
+      responses:
+        200:
+          description: Returns all examples
+    post:
+      tags:
+        - Examples
+      description: Create a new example
+      parameters:
+        - name: example
+          in: body
+          description: an example
+          required: true
+          schema: 
+            $ref: "#/definitions/ExampleBody"
+      responses:
+        200:
+          description: Returns all examples
+
+  /examples/{id}:
+    get:
+      tags:
+        - Examples
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The id of the example to retrieve
+          type: integer
+      responses:
+        200:
+          description: Return the example with the specified id
+        404:
+          description: Example not found
+
+  # Document ####################################################################
+
+  /documents:
+    get:
+      tags:
+        - Documents
+      description: Fetch all documents
+      responses:
+        200:
+          description: Returns all documents
+    post:
+      tags:
+        - Documents
+      description: Create a new document
+      consumes:
+        - multipart/form-data
+      parameters:
+        - name: name
+          in: formData
+          type: string
+          description: name of the new document
+          required: true
+        - name: content
+          in: formData
+          type: file
+          description: content of the new document
+          required: true
+      responses:
+        200:
+          description: document could be created
+
+  /documents/{id}:
+    get:
+      tags:
+        - Documents
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The id of the document to retrieve
+          type: string
+      responses:
+        200:
+          description: Return the document with the specified id
+        404:
+          description: Document not found
+  
+  /tags:
+    get:
+      tags:
+        - Tags
+      description: Fetch all examples
+      responses:
+        200:
+          description: Returns all examples
+
+  /tags/{id}:
+    get:
+      tags:
+        - Tags
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The id of the example to retrieve
+          type: integer
+      responses:
+        200:
+          description: Return the example with the specified id
+        404:
+          description: Example not found
