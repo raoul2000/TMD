@@ -1,4 +1,6 @@
 import L from '../../common/logger';
+import TagStore from '../../common/stores/tag.store';
+
 
 interface Tag {
     id: string;
@@ -9,9 +11,7 @@ export class TagsService {
 
     all(): Promise<Tag[]> {
         L.info('fetch all tags');
-        return Promise.resolve([
-            { id : "ID1", name : "tagName1"}
-        ]);
+        return TagStore.all();
     }
 
     byId(id: string): Promise<Tag> {

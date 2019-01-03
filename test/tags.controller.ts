@@ -11,7 +11,7 @@ describe('Tags', () => {
       .then(r => {
         expect(r.body)
           .to.be.an('array')
-          .of.length(1);
+          .of.length(2);
       }));
 
   it('should get an example by id', () =>
