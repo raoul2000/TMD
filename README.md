@@ -19,6 +19,18 @@ npm run dev
 npm run test
 ```
 
+`.env`file :
+```
+APP_ID=api-ts
+PORT=3000
+LOG_LEVEL=debug
+REQUEST_LIMIT=100kb
+SESSION_SECRET=mySecret
+
+#Swagger
+SWAGGER_API_SPEC=/spec
+```
+
 ---
 
 ## Install Dependencies

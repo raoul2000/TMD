@@ -4,7 +4,7 @@ import DB from 'nedb-promise';
 
 
 interface Tag {
-    id: string;
+    id?: string;
     name:string;
 }
 
@@ -12,9 +12,9 @@ export class TagStore {
 
     private store:any = null;
 
-    initialize():void {
+    initialize(options:Nedb.DataStoreOptions):void {
         console.log('__INIT DB__');
-        this.store = DB();
+        this.store = DB(options);
     }
 
     all(): Promise<Tag[]> {
