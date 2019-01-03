@@ -116,6 +116,8 @@ paths:
           description: Return the document with the specified id
         404:
           description: Document not found
+
+  # Tag ####################################################################
   
   /tags:
     get:

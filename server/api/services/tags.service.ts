@@ -16,10 +16,7 @@ export class TagsService {
 
     byId(id: string): Promise<Tag> {
         L.info(`fetch tag with id ${id}`);
-        return Promise.resolve({
-            "id" : 'ID2',
-            "name" : "TagName2"
-        });
+        return TagStore.byId(id);
     }
 }
 

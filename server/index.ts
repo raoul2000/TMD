@@ -5,6 +5,8 @@ import TagStore from './common/stores/tag.store';
 
 const port = parseInt(process.env.PORT);
 
+
+TagStore.initialize();
 /*
 TagStore.initialize()
   .then( () => {
