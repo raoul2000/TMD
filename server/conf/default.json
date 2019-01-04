@@ -1,0 +1,7 @@
+{
+    "setting" : "value",
+    "object" : {
+        "param1" : 1,
+        "param2" : "value2"
+    }
+}

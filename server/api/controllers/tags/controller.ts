@@ -1,11 +1,10 @@
 import TagsService from '../../services/tags.service';
 import { Request, Response } from 'express';
-
+import config from '../../../common/config';
 
 
 export class Controller {
   all(req: Request, res: Response): void {
-    debugger;
     TagsService.all().then(r => res.json(r));
   }
 
