@@ -28,10 +28,12 @@ export class TagStore {
     }
 
     deleteAll():Promise<number> {
+        L.info('delete all tags');
         return this.store.remove({}, { multi: true });        
     }
 
     insert(tags:Tag[] | Tag):Promise<Tag[]|Tag> {
+        L.info('insert one or more tags');
         return this.store.insert(tags);
     }
 }
