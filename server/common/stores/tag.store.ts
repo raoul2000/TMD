@@ -1,12 +1,8 @@
 import L from '../logger';
 import Nedb from 'nedb';
 import DB from 'nedb-promise';
+import {TMD} from '../../types';
 
-
-interface Tag {
-    id?: string;
-    name:string;
-}
 
 export class TagStore {
 
@@ -17,12 +13,12 @@ export class TagStore {
         this.store = DB(options);
     }
 
-    all(): Promise<Tag[]> {
+    all(): Promise<TMD.Tag[]> {
         L.info('fetch all tags');
         return this.store.find({});
     }
 
-    byId(id: string): Promise<Tag> {
+    byId(id: string): Promise<TMD.Tag> {
         L.info(`fetch tag with id ${id}`);
         return this.store.findOne({"_id" : id});
     }
@@ -32,7 +28,7 @@ export class TagStore {
         return this.store.remove({}, { multi: true });        
     }
 
-    insert(tags:Tag[] | Tag):Promise<Tag[]|Tag> {
+    insert(tags:TMD.Tag[] | TMD.Tag):Promise<TMD.Tag[]|TMD.Tag> {
         L.info('insert one or more tags');
         return this.store.insert(tags);
     }
