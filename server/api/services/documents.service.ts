@@ -1,26 +1,19 @@
-import L from '../../common/logger'
+import L from '../../common/logger';
+import DocumentStore from '../../common/stores/document.store';
+import {TMD} from '../../types';
 
 
-let id = 0;
-interface Document {
-  id: number,
-  name: string
-};
-
-const examples: Document[] = [
-    { id: id++, name: 'document 0' }, 
-    { id: id++, name: 'document 1' }
-];
 
 export class DocumentsService {
-  all(): Promise<Document[]> {
-    L.info(examples, 'fetch all examples');
-    return Promise.resolve(examples);
+
+  all(): Promise<TMD.Document[]> {
+      L.info('fetch all documents');
+      return DocumentStore.all();
   }
 
-  byId(id: number): Promise<Document> {
-    L.info(`fetch document with id ${id}`);
-    return this.all().then(r => r[id])
+  byId(id: string): Promise<TMD.Document> {
+      L.info(`fetch document with id ${id}`);
+      return DocumentStore.byId(id);
   }
 
   /**
@@ -28,14 +21,16 @@ export class DocumentsService {
    * @param name string 
    * @param file 
    */
-  create(name: string, file:Express.Multer.File): Promise<Document> {
-    L.info(`create document with name ${name}`);
-    const document: Document = {
-      id: id++,
-      name
-    };
-    examples.push(document)
-    return Promise.resolve(document);
+  create(name: string, file:Express.Multer.File): Promise<TMD.Document[] | TMD.Document> {
+    L.info(`NOT IMPLEMENTED : create document with name ${name}`);
+    return DocumentStore.insert({
+      "name" : name,
+      "content" : {
+        "originalName" : file.originalname,
+        "mimeType" : file.mimetype,
+        "size" : file.size
+      }
+    });
   }
 }
 

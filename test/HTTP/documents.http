@@ -1,0 +1,23 @@
+@baseURL = http://127.0.0.1:3000
+@path = api/v1
+
+###
+
+GET {{baseURL}}/{{path}}/documents 
+
+###
+
+POST {{baseURL}}/{{path}}/documents
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="name"
+
+document Name
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="content"; filename="document-1.md"
+Content-Type: image/png
+
+< ./data/document-1.md
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
