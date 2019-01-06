@@ -8,12 +8,13 @@ GET {{baseURL}}/{{path}}/tags
 ###
 
 POST {{baseURL}}/{{path}}/tags
-Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Type: application/json
 
-------WebKitFormBoundary7MA4YWxkTrZu0gW
-Content-Disposition: form-data; name="name"
-
-document Name
-------WebKitFormBoundary7MA4YWxkTrZu0gW--
-
+[{
+    "name" : "tagName 1"
+},
+{
+    "name" : "tagName 2"
+}
+]
 ###

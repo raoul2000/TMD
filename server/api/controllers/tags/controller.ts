@@ -17,7 +17,7 @@ export class Controller {
   create(req: Request, res: Response, next: NextFunction): void {
     console.log(JSON.stringify(req.body));
     // create the tag
-    TagsService.create(req.body.name).then(r =>
+    TagsService.create(req.body).then(r =>
       res
         .status(httpStatus.CREATED)
         .json(r),

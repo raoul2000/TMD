@@ -2,7 +2,7 @@ swagger: "2.0"
 info:
   version: 1.0.0
   title: api-ts
-  description: My cool TypeScript app
+  description: Tag My Document API
 basePath: /api/v1
 tags:
   - name: Examples
@@ -29,6 +29,15 @@ definitions:
       name:
         type: string
         example: no_stress
+  TagBody:
+    type: object
+    title: tag
+    required:
+      -name
+    properties:
+      name:
+        type: string
+        example: tagName
 
 paths:
   /examples:
@@ -139,11 +148,14 @@ paths:
         - Tags
       description: Create a new tag
       parameters:
-        - name: name
+        - name: tag
           in: body
           type: string
-          description: name of the new tag
+          description: the tag to create
           required: true
+          schema: 
+            $ref: "#/definitions/TagBody"
+
       responses:
         200:
           description: tag could be created

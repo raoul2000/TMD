@@ -19,6 +19,7 @@ export class TagsService {
       * @param name string 
       * @param file 
       */
+     /*
     create(name: string): Promise<TMD.Tag[] | TMD.Tag> {
         L.info(`create tag with name ${name}`);
         if (!name) {
@@ -32,6 +33,11 @@ export class TagsService {
         return TagStore.insert({
             "name": name
         });
+    }*/
+    create(tag: TMD.Tag): Promise<TMD.Tag[] | TMD.Tag> {
+        L.info(`create tag with name ${tag}`);
+
+        return TagStore.insert(tag);
     }
 }
 

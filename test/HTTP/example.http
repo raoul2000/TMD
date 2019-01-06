@@ -1,0 +1,17 @@
+@baseURL = http://127.0.0.1:3000
+@path = api/v1
+
+###
+
+GET {{baseURL}}/{{path}}/examples 
+
+###
+
+POST {{baseURL}}/{{path}}/examples
+Content-Type: application/json
+
+{
+    "name" : "example Name1"
+}
+
+###

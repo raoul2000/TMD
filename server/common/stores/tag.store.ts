@@ -28,8 +28,15 @@ export class TagStore {
         return this.store.remove({}, { multi: true });        
     }
 
+    validate(tag:TMD.Tag) {
+        if( tag.hasOwnProperty('_id')) {
+            delete tag._id;
+        }
+    }
+
     insert(tags:TMD.Tag[] | TMD.Tag):Promise<TMD.Tag[]|TMD.Tag> {
         L.info('insert one or more tags');
+
         return this.store.insert(tags);
     }
 }
