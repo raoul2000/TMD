@@ -21,10 +21,14 @@ export class DocumentsService {
    * @param name string 
    * @param file 
    */
-  create(name: string, file:Express.Multer.File): Promise<TMD.Document[] | TMD.Document> {
+  create(name: string, tags: string[], file:Express.Multer.File): Promise<TMD.Document[] | TMD.Document> {
     L.info(`create document with name ${name}`);
     if( ! name ) {
       return Promise.reject("missing parameter 'name'");
+    }
+    name = name.trim();
+    if( name.length === 0 ) {
+      return Promise.reject("invalid parameter 'name'");
     }
     
     const srcFilePath = file.path;
@@ -33,6 +37,7 @@ export class DocumentsService {
     return fse.move(srcFilePath,destFilePath)
       .then( () => DocumentStore.insert({
         "name" : name,
+        "tags" : tags,
         "content" : {
           "path" : destFilePath,
           "originalName" : file.originalname,

@@ -14,6 +14,7 @@ export declare namespace TMD {
     interface Document {
         id?: string;
         name: string;
+        tags: string[];
         note?:string;
         content: DocumentContent
     }

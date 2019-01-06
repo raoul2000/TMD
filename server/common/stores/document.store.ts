@@ -9,7 +9,7 @@ export class DocumentStore {
     private store:any = null;
 
     initialize(options:Nedb.DataStoreOptions):void {
-        console.log('__INIT DB__');
+        L.debug('__INIT DB__ : DocumentStore');
         this.store = DB(options);
     }
 

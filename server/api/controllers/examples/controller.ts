@@ -15,6 +15,7 @@ export class Controller {
   }
 
   create(req: Request, res: Response): void {
+    console.log(req.body);
     ExamplesService.create(req.body.name).then(r =>
       res
         .status(201)

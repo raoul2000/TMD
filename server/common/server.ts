@@ -8,12 +8,12 @@ import cookieParser from 'cookie-parser';
 import swaggerify from './swagger';
 import l from './logger';
 
-console.log('__NEW APP EXPRESS__');
+l.debug('__NEW APP EXPRESS__');
 const app = express();
 
 export default class ExpressServer {
   constructor() {
-    console.log('__NEW EXPRESS SERVER__');
+    l.debug('__NEW EXPRESS SERVER__');
     
     const root = path.normalize(__dirname + '/../..');
     app.set('appPath', root + 'client');

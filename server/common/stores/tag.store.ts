@@ -9,7 +9,7 @@ export class TagStore {
     private store:any = null;
 
     initialize(options:Nedb.DataStoreOptions):void {
-        console.log('__INIT DB__');
+        L.debug('__INIT DB__ : TagStore');
         this.store = DB(options);
     }
 

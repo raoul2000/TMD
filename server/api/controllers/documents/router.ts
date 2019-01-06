@@ -4,7 +4,7 @@ import l from '../../../common/logger';
 
 
 import multer from 'multer';
-const uploadFolder = process.env['UPLOAD_PATH'] || 'ipload';
+const uploadFolder = process.env['UPLOAD_PATH'] || 'upload';
 l.info(`Upload Folder : ${uploadFolder}`);
 
 const upload = multer({dest: uploadFolder });

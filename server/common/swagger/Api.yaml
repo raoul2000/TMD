@@ -92,6 +92,11 @@ paths:
           type: string
           description: name of the new document
           required: true
+        - name: tags
+          in: formData
+          type: string
+          description: comma separated list of tag ids assigned to the document
+          required: true
         - name: content
           in: formData
           type: file
@@ -100,6 +105,8 @@ paths:
       responses:
         200:
           description: document could be created
+        500:
+          description: an error occured, document could not be created
 
   /documents/{id}:
     get:
@@ -127,6 +134,21 @@ paths:
       responses:
         200:
           description: Returns all examples
+    post:
+      tags:
+        - Tags
+      description: Create a new tag
+      parameters:
+        - name: name
+          in: body
+          type: string
+          description: name of the new tag
+          required: true
+      responses:
+        200:
+          description: tag could be created
+        500:
+          description: an error occured, tag could not be created
 
   /tags/{id}:
     get:
