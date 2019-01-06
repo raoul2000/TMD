@@ -21,3 +21,6 @@ Content-Type: image/png
 < ./data/document-1.md
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 
+###
+
+DELETE {{baseURL}}/{{path}}/documents/1

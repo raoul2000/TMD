@@ -1,17 +1,13 @@
 import express from 'express';
 import controller from './controller'
-import { NextFunction } from 'connect';
+import l from '../../../common/logger';
+
 
 import multer from 'multer';
+const uploadFolder = process.env['UPLOAD_PATH'] || 'ipload';
+l.info(`Upload Folder : ${uploadFolder}`);
 
-const upload = multer({dest: 'uploads/'});
-
-const rh = (req:any, res: any, next:NextFunction) => {
-    debugger;
-    let handler = upload.single('content');
-    return handler(req, res,next);
-};
-
+const upload = multer({dest: uploadFolder });
 
 export default express.Router()
     .post('/', upload.single('content') , controller.create)

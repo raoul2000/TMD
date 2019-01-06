@@ -6,6 +6,7 @@ export declare namespace TMD {
     }
 
     interface DocumentContent {
+        path: string;
         originalName: string;
         mimeType: string;
         size: number;

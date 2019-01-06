@@ -1,8 +1,5 @@
 import DocumentsService from '../../services/documents.service';
 import { Request, Response, NextFunction } from 'express';
-import multer from 'multer';
-
-const upload = multer({dest: 'uploads/'});
 
 export class Controller {
   all(req: Request, res: Response): void {
@@ -21,9 +18,15 @@ export class Controller {
     DocumentsService.create(req.body.name, req.file).then(r =>
       res
         .status(201)
-        .location(`<%= apiRoot %>/documents/${r.id}`)
         .json(r),
-    );
+    ).catch( err => {
+      res
+      .status(500)
+      .json({
+        "errorMessage" : err
+      });
+    });
   }
 }
+
 export default new Controller();
