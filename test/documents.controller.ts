@@ -43,6 +43,7 @@ describe('Documents', () => {
       .post('/api/v1/documents')
       .attach('content', path.join(__dirname,'data/document-1.md') )
       .field('name','document1')
+      .field('tags','T1,T2')
       .expect('Content-Type', /json/)
       .then(r => {
         expect(r.body)

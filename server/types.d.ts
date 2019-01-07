@@ -18,4 +18,8 @@ export declare namespace TMD {
         note?:string;
         content: DocumentContent
     }
+
+    interface StoredDocument extends Document {
+        _id:string;
+    }
 }

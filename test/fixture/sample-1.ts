@@ -7,7 +7,9 @@ export default {
         {
             "_id" : "1",
             "name" : "document 1",
+            "tags" : [],
             "content" : {
+                "path" : "/a/b/c",
                 "originalName" : "orig-doc.txt",
                 "size" : 1234,
                 "mimeType" : "application/txt"
