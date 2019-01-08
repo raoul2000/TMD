@@ -2,7 +2,7 @@
   "execMap": {
     "ts": "ts-node"
   },
-  "ignore": ["test/**/*.ts", "test/**/*.spec.ts", ".git", "node_modules"],
+  "ignore": ["test/**/*.ts", "test/**/*.spec.ts", ".git", "node_modules","tmp"],
   "watch": ["server"],
   "ext": "ts,js,json,yaml,yml"
 }
