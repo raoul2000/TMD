@@ -20,14 +20,10 @@ Content-Type: application/json
 
 ###
 
-GET {{baseURL}}/{{path}}/tags
-
-###
-
-GET {{baseURL}}/{{path}}/tags/1
+GET {{baseURL}}/{{path}}/tags/TJn0axm57DMKWiKq
 
 ###
 
 
-DELETE {{baseURL}}/{{path}}/tags/1
+DELETE {{baseURL}}/{{path}}/tags/TJn0axm57DMKWiKq
 

@@ -15,7 +15,7 @@ export class TagsService {
         return TagStore.byId(id);
     }
 
-    deleteById(id: string): Promise<TMD.Tag> {
+    deleteById(id: string): Promise<number> {
         L.info(`delete tag with id ${id}`);
         return TagStore.deleteById(id);
     }

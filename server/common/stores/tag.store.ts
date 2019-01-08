@@ -22,6 +22,11 @@ export class TagStore {
         L.info(`fetch tag with id ${id}`);
         return this.store.findOne({"_id" : id});
     }
+    
+    deleteById(id: string): Promise<number> {
+        L.info(`delete tag with id ${id}`);
+        return this.store.remove({ "_id" : id}, { multi: false });   
+    }
 
     deleteAll():Promise<number> {
         L.info('delete all tags');
