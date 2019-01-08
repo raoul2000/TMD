@@ -14,6 +14,13 @@ export class Controller {
     });
   }
 
+  deleteById(req: Request, res: Response): void {
+    TagsService.deleteById(req.params.id).then(r => {
+      if (r) res.json(r);
+      else res.status(httpStatus.NOT_FOUND).end();
+    });
+  }
+
   create(req: Request, res: Response, next: NextFunction): void {
     console.log(JSON.stringify(req.body));
     // create the tag

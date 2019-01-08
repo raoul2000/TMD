@@ -14,6 +14,11 @@ export class TagsService {
         L.info(`fetch tag with id ${id}`);
         return TagStore.byId(id);
     }
+
+    deleteById(id: string): Promise<TMD.Tag> {
+        L.info(`delete tag with id ${id}`);
+        return TagStore.deleteById(id);
+    }
     /**
       * 
       * @param name string 

@@ -11,10 +11,23 @@ POST {{baseURL}}/{{path}}/tags
 Content-Type: application/json
 
 [{
-    "name" : "tagName 1"
+    "name" : "T1"
 },
 {
-    "name" : "tagName 2"
+    "name" : "T2"
 }
 ]
+
 ###
+
+GET {{baseURL}}/{{path}}/tags
+
+###
+
+GET {{baseURL}}/{{path}}/tags/1
+
+###
+
+
+DELETE {{baseURL}}/{{path}}/tags/1
+

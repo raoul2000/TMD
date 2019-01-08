@@ -26,6 +26,8 @@ PORT=3000
 LOG_LEVEL=debug
 REQUEST_LIMIT=100kb
 SESSION_SECRET=mySecret
+UPLOAD_PATH=tmp/upload
+CONTENT_ROOT_PATH=tmp/content
 
 #Swagger
 SWAGGER_API_SPEC=/spec

@@ -170,10 +170,24 @@ paths:
         - name: id
           in: path
           required: true
-          description: The id of the example to retrieve
+          description: The id of the tag to retrieve
           type: integer
       responses:
         200:
-          description: Return the example with the specified id
+          description: Return the tag with the specified id
         404:
-          description: Example not found
+          description: Tag not found
+    delete:
+      tags:
+        - Tags
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The id of the tag to delete
+          type: integer
+      responses:
+        200:
+          description: The tag has been deleted
+        404:
+          description: Tag not found
