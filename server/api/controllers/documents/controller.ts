@@ -14,6 +14,10 @@ export class Controller {
     });
   }
 
+  deleteById(req: Request, res: Response): void {
+      res.json({ "ok" : 1});
+  }
+
   create(req: Request, res: Response, next: NextFunction): void {
     console.log(req.file);
     console.log(req.body);

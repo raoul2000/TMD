@@ -132,6 +132,20 @@ paths:
           description: Return the document with the specified id
         404:
           description: Document not found
+    delete:
+      tags:
+        - Documents
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The id of the document to delete
+          type: string
+      responses:
+        200:
+          description: the document was deleted
+        404:
+          description: Document not found
 
   # Tag ####################################################################
   

@@ -16,7 +16,7 @@ export class Controller {
 
   deleteById(req: Request, res: Response): void {
     TagsService.deleteById(req.params.id).then(r => {
-      if (r) res.json(r);
+      if (r !== 0) res.end();
       else res.status(httpStatus.NOT_FOUND).end();
     });
   }

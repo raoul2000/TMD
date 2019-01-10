@@ -12,4 +12,5 @@ const upload = multer({dest: uploadFolder });
 export default express.Router()
     .post('/', upload.single('content') , controller.create)
     .get('/', controller.all)
-    .get('/:id', controller.byId);
+    .get('/:id', controller.byId)
+    .delete('/:id', controller.deleteById);
