@@ -12,6 +12,7 @@ describe('Tags', () => {
 
   beforeEach((done) => {
     TagStore.deleteAll()
+      .then( () => TagStore.deleteAll())
       .then( () => TagStore.insert(fixture.tags))
       .then( () => {
         done();
