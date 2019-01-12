@@ -20,6 +20,7 @@ const importTag = (tag) => {
     }
     return tag;
 };
+
 const importTags = (tags) => tags.map( importTag);
 
 
@@ -30,6 +31,9 @@ export class TagStore {
     initialize(options:Nedb.DataStoreOptions):void {
         L.debug('__INIT DB__ : TagStore');
         this.store = DB(options);
+        this.store.ensureIndex({ fieldName: 'name', unique: true }, (err) => {
+            throw new Error("failed to setup index");
+        });
     }
 
     all(): Promise<TMD.Tag[]> {
@@ -54,7 +58,6 @@ export class TagStore {
 
     insert(tags:TMD.Tag[] | TMD.Tag):Promise<TMD.Tag[]|TMD.Tag> {
         L.info('insert one or more tags');
-
         let items = Array.isArray(tags) ? importTags(tags) : importTag(tags);
 
         return this.store.insert(items);
