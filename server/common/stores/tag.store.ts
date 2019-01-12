@@ -4,6 +4,25 @@ import DB from 'nedb-promise';
 import {TMD} from '../../types';
 
 
+const exportTag = (tag) => {
+    if(tag) {
+        tag.id = tag._id;
+        delete tag._id;
+    }
+    return tag;
+} ;
+const exportTags = (tags) => tags.map( exportTag ); 
+
+const importTag = (tag) => {
+    if(tag) {
+        delete tag._id;
+        delete tag.id;
+    }
+    return tag;
+};
+const importTags = (tags) => tags.map( importTag);
+
+
 export class TagStore {
 
     private store:any = null;
@@ -15,12 +34,12 @@ export class TagStore {
 
     all(): Promise<TMD.Tag[]> {
         L.info('fetch all tags');
-        return this.store.find({});
+        return this.store.find({}).then( exportTags );
     }
 
     byId(id: string): Promise<TMD.Tag> {
         L.info(`fetch tag with id ${id}`);
-        return this.store.findOne({"_id" : id});
+        return this.store.findOne({"_id" : id}).then( exportTag );
     }
     
     deleteById(id: string): Promise<number> {
@@ -36,7 +55,9 @@ export class TagStore {
     insert(tags:TMD.Tag[] | TMD.Tag):Promise<TMD.Tag[]|TMD.Tag> {
         L.info('insert one or more tags');
 
-        return this.store.insert(tags);
+        let items = Array.isArray(tags) ? importTags(tags) : importTag(tags);
+
+        return this.store.insert(items);
     }
 }
 

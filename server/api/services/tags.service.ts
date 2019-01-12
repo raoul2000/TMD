@@ -1,6 +1,7 @@
 import L from '../../common/logger';
 import TagStore from '../../common/stores/tag.store';
 import { TMD } from '../../types';
+import validateSchema from '../../common/schema/tag.schema';
 
 
 export class TagsService {
@@ -19,28 +20,13 @@ export class TagsService {
         L.info(`delete tag with id ${id}`);
         return TagStore.deleteById(id);
     }
-    /**
-      * 
-      * @param name string 
-      * @param file 
-      */
-     /*
-    create(name: string): Promise<TMD.Tag[] | TMD.Tag> {
-        L.info(`create tag with name ${name}`);
-        if (!name) {
-            return Promise.reject("missing parameter 'name'");
-        }
-        name = name.trim();
-        if (name.length === 0) {
-            return Promise.reject("invalid parameter 'name'");
-        }
 
-        return TagStore.insert({
-            "name": name
-        });
-    }*/
-    create(tag: TMD.Tag): Promise<TMD.Tag[] | TMD.Tag> {
-        L.info(`create tag with name ${tag}`);
+    create(tag: TMD.Tag[] | TMD.Tag): Promise<TMD.Tag[] | TMD.Tag> {
+        L.info('create tag(s)');
+
+        if( validateSchema(tag).find( (validation) => validation.error !== null) ) {
+            return Promise.reject('invalid tag schema');
+        }
 
         return TagStore.insert(tag);
     }

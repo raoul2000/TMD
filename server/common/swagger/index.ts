@@ -43,13 +43,14 @@ export default function (app: Application, routes: (app: Application) => void) {
       middleware.validateRequest());
 
     // Error handler to display the validation error as HTML
+    /*
     app.use(function (err, req, res, next) {
       res.status(err.status);
-      res.send(
+      res.json(
         '<h1>' + err.status + ' Error</h1>' +
         '<pre>' + err.message + '</pre>'
       );
-    });
+    });*/
 
     routes(app);
   });
