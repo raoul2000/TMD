@@ -32,7 +32,7 @@ export class TagStore {
         L.debug('__INIT DB__ : TagStore');
         this.store = DB(options);
         this.store.ensureIndex({ fieldName: 'name', unique: true }, (err) => {
-            throw new Error("failed to setup index");
+            if(err) throw new Error("failed to setup index");
         });
     }
 
