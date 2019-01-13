@@ -1,29 +1,44 @@
 import 'mocha';
-import { expect } from 'chai';
+import { expect, assert } from 'chai';
 import validateTag from '../server/common/schema/tag.schema';
-import { assert } from 'joi';
+
 
 describe('Tag Schema', () => {
   it('validate a tag object', () => {
-    const { error, value} = validateTag({
-        "name" : "eee"
+    const result = validateTag({
+      "name": "eee"
     });
-    expect(error).to.be.null;
-    expect(value).at.have.property('name').equals("eee");
-    //console.log(error);
-    //console.log(value);
+    //console.log(JSON.stringify(result));
+    assert.isArray(result);
+    assert.lengthOf(result, 1);
+    assert.equal(result[0].value.name, "eee");
+    assert.isNull(result[0].error);
   });
 
   it('validate fails on a tag object', () => {
-    const { error, value} = validateTag({
-        "XXX" : "eee"
+    const result = validateTag({
+      "XXXX": "eee"
     });
-    expect(error).to.not.be.null;    
-    expect(error).at.have.property('isJoi').equals(true);
-    expect(error).at.have.property('name').equals('ValidationError');
-    
-    //console.log(error);
-    //console.log(value);
+    console.log(JSON.stringify(result));
+    assert.isArray(result);
+    assert.lengthOf(result, 1);
+
+    const v = result[0];
+
+    assert.isNotNull(v.error);
+    assert.lengthOf(v.error.details, 1);
+    const detail = v.error.details[0];
+
+    assert.deepEqual(detail, {
+      "message": "\"name\" is required",
+      "path": ["name"],
+      "type": "any.required",
+      "context": {
+        "key": "name",
+        "label": "name"
+      }
+    });
+
   });
 
 });
