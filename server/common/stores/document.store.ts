@@ -12,6 +12,10 @@ export class DocumentStore {
         L.debug('__INIT DB__ : DocumentStore');
         this.store = DB(options);
     }
+    
+    getImplementation(): any {
+        return this.store;
+    }
 
     all(): Promise<TMD.Document[]> {
         L.info('fetch all documents');

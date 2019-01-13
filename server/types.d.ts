@@ -22,4 +22,7 @@ export declare namespace TMD {
     interface StoredDocument extends Document {
         _id:string;
     }
+    interface NedbDocument {
+        _id:string;
+    }
 }

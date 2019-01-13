@@ -11,7 +11,7 @@ POST {{baseURL}}/{{path}}/tags
 Content-Type: application/json
 
 [{
-    "name" : "AAA"
+    "name" : "AAsA"
 },
 {
     "name" : "T2"
@@ -24,15 +24,15 @@ POST {{baseURL}}/{{path}}/tags
 Content-Type: application/json
 
 {
-    "name" : "AAAZZsZ"
+    "name" : "EEEE"
 }
 
 ###
 
-GET {{baseURL}}/{{path}}/tags/1e
+GET {{baseURL}}/{{path}}/tags/3CFZsqjAskTxL2lL
 
 ###
 
 
-DELETE {{baseURL}}/{{path}}/tags/W6ZuAjDHPcmbw049
+DELETE {{baseURL}}/{{path}}/tags/3CFZsqjAskTxL2lL
 

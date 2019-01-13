@@ -1,11 +1,10 @@
 import 'mocha';
 import { expect } from 'chai';
 import request from 'supertest';
-import Server from '../server';
-import { doesNotReject } from 'assert';
-import { before } from 'mocha';
-import fixture from './fixture/sample-1';
-import TagStore from '../server/common/stores/tag.store';
+import Server from '../../../server';
+import fixture from '../../fixture/sample-1';
+import TagStore from '../../../server/common/stores/tag.store';
+import httpStatus from "http-status";
 
 
 describe('Tags', () => {
@@ -13,7 +12,7 @@ describe('Tags', () => {
   beforeEach((done) => {
     TagStore.deleteAll()
       .then( () => TagStore.deleteAll())
-      .then( () => TagStore.insert(fixture.tags))
+      .then( () => TagStore.getImplementation().insert(fixture.tags))
       .then( () => {
         done();
       });
@@ -34,11 +33,22 @@ describe('Tags', () => {
       .get('/api/v1/tags/2')
       .expect('Content-Type', /json/)
       .then(r => {
-
-        console.log(JSON.stringify(r.body));
+        //console.log(JSON.stringify(r.body));
         expect(r.body)
           .to.be.an('object')
           .that.has.property('name')
           .equal('tagName 2');
+      }));
+
+  it('should fail to get a tag by unkown id', () =>
+    request(Server)
+      .get('/api/v1/tags/NOT_FOUND')
+      .expect('Content-Type', /json/)
+      .expect(httpStatus.NOT_FOUND)
+      .then(r => {
+        //console.log(JSON.stringify(r.body));
+        expect(r.body)
+          .to.be.an('object')
+          .that.has.property('message');
       }));
 });

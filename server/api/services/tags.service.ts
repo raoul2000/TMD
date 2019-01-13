@@ -18,6 +18,8 @@ export class TagsService {
 
     deleteById(id: string): Promise<number> {
         L.info(`delete tag with id ${id}`);
+        // TODO: When deleting a tag, all document linked to this tag must
+        // also be modified 
         return TagStore.deleteById(id);
     }
 
@@ -26,11 +28,17 @@ export class TagsService {
 
         const validationResult = validateSchema(tag);
         if( validationResult.find( (validation) => validation.error !== null) ) {
-            //return Promise.reject('invalid tag schema');
             return Promise.reject(new TMDError("invalid tag", validationResult));
         }
 
-        return TagStore.insert(tag);
+        return TagStore
+            .insert(tag) 
+            .catch( (err) => {
+                if( err.errorType && err.errorType == "uniqueViolated") {
+                    return new TMDError('duplicate tag name', err);
+                } 
+                return err;
+            });
     }
 }
 

@@ -2,16 +2,11 @@ import L from '../logger';
 import Nedb from 'nedb';
 import DB from 'nedb-promise';
 import {TMD} from '../../types';
+import {checkin, checkout} from './helpers';
 
 
-const exportTag = (tag) => {
-    if(tag) {
-        tag.id = tag._id;
-        delete tag._id;
-    }
-    return tag;
-} ;
-const exportTags = (tags) => tags.map( exportTag ); 
+
+
 
 const importTag = (tag) => {
     if(tag) {
@@ -36,14 +31,18 @@ export class TagStore {
         });
     }
 
+    getImplementation(): any {
+        return this.store;
+    }
+
     all(): Promise<TMD.Tag[]> {
         L.info('fetch all tags');
-        return this.store.find({}).then( exportTags );
+        return this.store.find({}).then( checkout );
     }
 
     byId(id: string): Promise<TMD.Tag> {
         L.info(`fetch tag with id ${id}`);
-        return this.store.findOne({"_id" : id}).then( exportTag );
+        return this.store.findOne({"_id" : id}).then( checkout );
     }
     
     deleteById(id: string): Promise<number> {
@@ -58,9 +57,11 @@ export class TagStore {
 
     insert(tags:TMD.Tag[] | TMD.Tag):Promise<TMD.Tag[]|TMD.Tag> {
         L.info('insert one or more tags');
-        let items = Array.isArray(tags) ? importTags(tags) : importTag(tags);
+        //let items = Array.isArray(tags) ? importTags(tags) : importTag(tags);
 
-        return this.store.insert(items);
+        return Promise.resolve(checkin(tags))
+            .then(this.store.insert)
+            .then( checkout );
     }
 }
 
