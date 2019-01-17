@@ -16,6 +16,11 @@ export class DocumentsService {
       return DocumentStore.byId(id);
   }
 
+  deleteById(id: string): Promise<TMD.Document> {
+      L.info(`delete document with id ${id}`);
+      return DocumentStore.deleteById(id);
+  }
+
   /**
    * 
    * @param name string 

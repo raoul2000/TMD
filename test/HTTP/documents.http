@@ -7,6 +7,10 @@ GET {{baseURL}}/{{path}}/documents
 
 ###
 
+GET {{baseURL}}/{{path}}/documents/eJiWnL6TN24WWZZ2
+
+###
+
 POST {{baseURL}}/{{path}}/documents
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
@@ -27,4 +31,8 @@ Content-Type: image/png
 
 ###
 
-DELETE {{baseURL}}/{{path}}/documents/1
+DELETE {{baseURL}}/{{path}}/documents/WXMAUKW6cOipfXq2
+
+### delete All (not available)
+
+DELETE {{baseURL}}/{{path}}/documents

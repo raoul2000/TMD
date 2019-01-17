@@ -15,8 +15,12 @@ describe('Tags', () => {
     TagStore.deleteAll()
       .then( () => TagStore.getImplementation().insert(fixture.tags))
       .then( () => {
-        console.log('XXXXX');
-        done();
+        TagStore.all().then( (records) => {
+          console.log(records);
+          done();
+        });
+        //console.log('XXXXX');
+        //done();
       });
   });
 
@@ -50,13 +54,27 @@ describe('Tags', () => {
   it('should fail create tag with duplicate name', () =>
     request(Server)
       .post('/api/v1/tags')
-      .send({"name" : "tagName 1"})
+      .send({"name" : 'tagName 12'})
       .expect('Content-Type', /json/)
-      .expect(httpStatus.INTERNAL_SERVER_ERROR)
+      //.expect(httpStatus.INTERNAL_SERVER_ERROR)
       .then(r => {
+        debugger;
+        TagStore.all().then( (records) => {
+          console.log(records);
+          console.log('---------------');
+          TagStore.insert({
+            name : "XXXXX"
+          })
+          .then( () => TagStore.all())
+          .then( (records) => console.log(records))
+          .catch( (err) => {
+            console.error(err);
+          });
+        });        /*
           console.log(r.body);
           assert.isObject(r.body);
           assert.propertyVal(r.body,"message","duplicate tag name");
+          */
       }
     )
   );

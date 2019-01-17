@@ -24,7 +24,7 @@ POST {{baseURL}}/{{path}}/tags
 Content-Type: application/json
 
 {
-    "name" : "EEEE"
+    "name" : "tagName 1"
 }
 
 ###

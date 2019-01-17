@@ -4,21 +4,6 @@ import DB from 'nedb-promise';
 import {TMD} from '../../types';
 import {checkin, checkout} from './helpers';
 
-
-
-
-
-const importTag = (tag) => {
-    if(tag) {
-        delete tag._id;
-        delete tag.id;
-    }
-    return tag;
-};
-
-const importTags = (tags) => tags.map( importTag);
-
-
 export class TagStore {
 
     private store:any = null;
@@ -26,6 +11,7 @@ export class TagStore {
     initialize(options:Nedb.DataStoreOptions):void {
         L.debug('__INIT DB__ : TagStore');
         this.store = DB(options);
+        console.log('init index name');
         this.store.ensureIndex({ fieldName: 'name', unique: true }, (err) => {
             if(err) throw new Error("failed to setup index");
         });

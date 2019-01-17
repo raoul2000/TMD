@@ -15,7 +15,10 @@ export class Controller {
   }
 
   deleteById(req: Request, res: Response): void {
-      res.json({ "ok" : 1});
+    DocumentsService.deleteById(req.params.id).then(r => {
+      if (r) res.json(r);
+      else res.status(httpStatus.NOT_FOUND).end();
+    });
   }
 
   create(req: Request, res: Response, next: NextFunction): void {
