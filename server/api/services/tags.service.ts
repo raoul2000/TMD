@@ -35,9 +35,9 @@ export class TagsService {
             .insert(tag) 
             .catch( (err) => {
                 if( err.errorType && err.errorType == "uniqueViolated") {
-                    return new TMDError('duplicate tag name', err);
+                    return Promise.reject(new TMDError('duplicate tag name', err));
                 } 
-                return err;
+                return Promise.reject(err);
             });
     }
 }

@@ -34,5 +34,5 @@ GET {{baseURL}}/{{path}}/tags/3CFZsqjAskTxL2lL
 ###
 
 
-DELETE {{baseURL}}/{{path}}/tags/3CFZsqjAskTxL2lL
+DELETE {{baseURL}}/{{path}}/tags/1
 
