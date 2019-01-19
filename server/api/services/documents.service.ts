@@ -1,8 +1,7 @@
 import L from '../../common/logger';
 import DocumentStore from '../../common/stores/document.store';
 import {TMD} from '../../types';
-import path from 'path';
-import fse from 'fs-extra';
+import Repository from '../../common/content/repository';
 
 export class DocumentsService {
 
@@ -35,21 +34,14 @@ export class DocumentsService {
     if( name.length === 0 ) {
       return Promise.reject("invalid parameter 'name'");
     }
-    
-    const srcFilePath = file.path;
-    const destFilePath = path.join(process.env['CONTENT_ROOT_PATH'],file.filename);
 
-    return fse.move(srcFilePath,destFilePath)
-      .then( () => DocumentStore.insert({
+    return Repository.write(file)
+      .then( (contentMetadata) => DocumentStore.insert({
         "name" : name,
         "tags" : tags,
-        "content" : {
-          "path" : destFilePath,
-          "originalName" : file.originalname,
-          "mimeType" : file.mimetype,
-          "size" : file.size
-        }
-      }));
+        "content" :contentMetadata
+      })
+    );
   }
 }
 

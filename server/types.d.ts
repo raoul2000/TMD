@@ -25,4 +25,14 @@ export declare namespace TMD {
     interface NedbDocument {
         _id:string;
     }
+
+    interface RepositoryInterface {
+        write(file: any ): Promise<ContentMetadata>;
+    }
+    interface ContentMetadata {
+        path: string;
+        originalName:string;
+        mimeType : string;
+        size : number;
+    }
 }
