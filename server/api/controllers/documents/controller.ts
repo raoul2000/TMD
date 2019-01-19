@@ -33,10 +33,15 @@ export class Controller {
       });
       return;
     }
+
+    const tags = JSON.parse(req.body.tags).map( (tag) => {
+      return tag;
+    });
+    /*
     const tags = req.body.tags.split(',')
       .map( tagId => tagId.trim())
       .filter( tagId => tagId.length !== 0);
-
+    */
     // create the document
     DocumentsService.create(req.body.name, tags, req.file).then(r =>
       res
