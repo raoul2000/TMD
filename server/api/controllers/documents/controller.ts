@@ -1,6 +1,10 @@
+import L from '../../../common/logger';
 import DocumentsService from '../../services/documents.service';
 import { Request, Response, NextFunction } from 'express';
 import httpStatus from 'http-status';
+import fse from 'fs-extra';
+import fs from 'fs';
+
 
 export class Controller {
   all(req: Request, res: Response): void {
@@ -26,34 +30,56 @@ export class Controller {
     console.log(req.body);
 
     // build tag Id list
-    if( ! req.body.tags) {
+    if (!req.body.tags) {
       res.status(httpStatus.INTERNAL_SERVER_ERROR)
-      .json({
-        "errorMessage" : "missing parameter 'tags"
-      });
+        .json({
+          "errorMessage": "missing parameter 'tags"
+        });
       return;
     }
 
-    const tags = JSON.parse(req.body.tags).map( (tag) => {
-      return tag;
-    });
-    /*
-    const tags = req.body.tags.split(',')
-      .map( tagId => tagId.trim())
-      .filter( tagId => tagId.length !== 0);
-    */
-    // create the document
-    DocumentsService.create(req.body.name, tags, req.file).then(r =>
-      res
-        .status(httpStatus.CREATED)
-        .json(r),
-    ).catch( err => {
-      res
-      .status(httpStatus.INTERNAL_SERVER_ERROR)
-      .json({
-        "errorMessage" : err
+    const tags = JSON.parse(req.body.tags);
+
+    // Promisify fs.unlink
+    const unlink = (path) => new Promise((resolve, reject) => {
+      fs.unlink(path, (err) => {
+        if (err) reject(err);
+        else resolve();
       });
     });
+
+    // delete uploaded file from local FS
+    const deleteUploadFile = () => unlink(req.file.path)
+      .catch(err => {
+        L.error(`failed to delete uploaded file : ${req.file.path}`);
+        return Promise.resolve(); // always resolved
+      });
+
+    // send success Response
+    const sendSuccessResponse = (insertedDoc) => res
+      .status(httpStatus.CREATED)
+      .json(insertedDoc);
+
+    // send error Response
+    const sendErrorResponse = (err) => res
+      .status(httpStatus.INTERNAL_SERVER_ERROR)
+      .json({
+        "errorMessage": err
+      });
+
+    // create the document
+    DocumentsService
+      .create(req.body.name, tags, req.file)
+      .then(
+        (insertedDoc) => {
+          return deleteUploadFile()
+            .then(() => sendSuccessResponse(insertedDoc));
+        },
+        (error) => {
+          return deleteUploadFile()
+            .then(() => sendErrorResponse(error));
+        }
+      );
   }
 }
 
