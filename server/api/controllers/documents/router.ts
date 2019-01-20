@@ -13,4 +13,5 @@ export default express.Router()
     .post('/', upload.single('content') , controller.create)
     .get('/', controller.all)
     .get('/:id', controller.byId)
-    .delete('/:id', controller.deleteById);
+    .delete('/:id', controller.deleteById)
+    .get('/:id/content', controller.content);

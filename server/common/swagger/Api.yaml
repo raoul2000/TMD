@@ -146,6 +146,24 @@ paths:
           description: the document was deleted
         404:
           description: Document not found
+  /documents/{id}/content:
+    get:
+      tags:
+        - Documents
+      summary: get the content of a document
+      description: Each document has one main content that is returned by a call to this URL
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The id of the document to retrieve content from
+          type: string
+      responses:
+        200:
+          description: Return the content of the document with the specified id
+        404:
+          description: Document not found
+
 
   # Tag ####################################################################
   
