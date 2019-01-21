@@ -7,11 +7,11 @@ GET {{baseURL}}/{{path}}/documents
 
 ###
 
-GET {{baseURL}}/{{path}}/documents/DqATFQtFrVTQ34Yg/content
+GET {{baseURL}}/{{path}}/documents/TVfu03J6tcAHRnMa/content
 
 ###
 
-GET {{baseURL}}/{{path}}/documents/DqATFQtFrVTQ34Yg
+GET {{baseURL}}/{{path}}/documents/DfZ5XEaDsAJJ4hgq
 
 ###
 
@@ -21,16 +21,16 @@ Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0g
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
 Content-Disposition: form-data; name="tags"
 
-[ { "name" : "Azedr"}, { "name" : "Exist", "id" : 12}]
+[ { "name" : "Azssedr"}, { "name" : "Exist", "id" : 12}]
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
 Content-Disposition: form-data; name="name"
 
 document Name
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
-Content-Disposition: form-data; name="content"; filename="document-1.md"
-Content-Type: image/png
+Content-Disposition: form-data; name="content"; filename="image-1.jpg"
+Content-Type: image/jpeg
 
-< ./data/document-1.md
+< ../api/documents/content-file/image-1.jpg
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 
 ###

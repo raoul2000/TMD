@@ -22,9 +22,8 @@ export class Controller {
     DocumentsService.byId(req.params.id).then(r => {
       if (r) {
         res.download(r.content.path, r.content.originalName);
-        //res.status(httpStatus.NOT_FOUND).download(r.content.path, r.content.originalName).end();
       }
-      else res.json(r);
+      else res.status(httpStatus.NOT_FOUND).end();
     });
   }
 
