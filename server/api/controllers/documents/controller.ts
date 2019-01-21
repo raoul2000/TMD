@@ -4,7 +4,7 @@ import { Request, Response, NextFunction } from 'express';
 import httpStatus from 'http-status';
 import fse from 'fs-extra';
 import fs from 'fs';
-
+import TMDError from '../../../common/error';
 
 export class Controller {
   all(req: Request, res: Response): void {
@@ -13,8 +13,11 @@ export class Controller {
 
   byId(req: Request, res: Response): void {
     DocumentsService.byId(req.params.id).then(r => {
+
       if (r) res.json(r);
-      else res.status(httpStatus.NOT_FOUND).end();
+      else res
+        .status(httpStatus.NOT_FOUND)
+        .json(new TMDError(`document not found (id = ${req.params.id})`));
     });
   }
 
@@ -29,8 +32,10 @@ export class Controller {
 
   deleteById(req: Request, res: Response): void {
     DocumentsService.deleteById(req.params.id).then(r => {
-      if (r) res.json(r);
-      else res.status(httpStatus.NOT_FOUND).end();
+      if (r !== 0) res.end();
+      else res
+        .status(httpStatus.NOT_FOUND)
+        .json(new TMDError(`tag not found (id = ${req.params.id})`));
     });
   }
 

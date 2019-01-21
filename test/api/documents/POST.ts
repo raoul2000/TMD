@@ -4,20 +4,15 @@ import path from 'path';
 import { expect, assert } from 'chai';
 import request from 'supertest';
 import Server from '../../../server';
+import fixtureLoader from '../../fixture/loader';
 import fixture from '../../fixture/sample-1';
-import DocumentStore from '../../../server/common/stores/document.store';
-import TagStore from '../../../server/common/stores/tag.store';
 
 
 describe('POST Documents', () => {
 
     beforeEach((done) => {
-        DocumentStore.deleteAll()
-            .then(() => TagStore.deleteAll())
-            .then(() => DocumentStore.getImplementation().insert(fixture.documents))
-            .then(() => {
-                done();
-            });
+        fixtureLoader(fixture)
+            .then(() => done());
     });
 
 

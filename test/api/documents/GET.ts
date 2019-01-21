@@ -1,21 +1,17 @@
 import 'mocha';
-import path from 'path';
 
 import { expect } from 'chai';
 import request from 'supertest';
 import Server from '../../../server';
+import fixtureLoader from '../../fixture/loader';
 import fixture from '../../fixture/sample-1';
-import DocumentStore from '../../../server/common/stores/document.store';
+import httpStatus from "http-status";
 
 describe('GET Documents', () => {
 
     beforeEach((done) => {
-        DocumentStore.deleteAll()
-            .then(() => DocumentStore.deleteAll())
-            .then(() => DocumentStore.getImplementation().insert(fixture.documents))
-            .then(() => {
-                done();
-            });
+        fixtureLoader(fixture)
+            .then(() => done());
     });
 
     it('should get all documents', () =>
@@ -37,5 +33,27 @@ describe('GET Documents', () => {
                     .to.be.an('object')
                     .that.has.property('name')
                     .equal('document 1');
+            }));
+
+    it('should fail to get a document by unkownw id', () =>
+        request(Server)
+            .get('/api/v1/documents/NOT_FOUND')
+            .expect('Content-Type', /json/)
+            .expect(httpStatus.NOT_FOUND)
+            .then(r => {
+                expect(r.body)
+                    .to.be.an('object')
+                    .that.has.property('message');
+            }));
+
+    it('should get document content from document id', () =>
+        request(Server)
+            .get('/api/v1/documents/1/content')
+            .expect('Content-Type', /json/)
+            .expect(httpStatus.NOT_FOUND)
+            .then(r => {
+                expect(r.body)
+                    .to.be.an('object')
+                    .that.has.property('message');
             }));
 });

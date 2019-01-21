@@ -27,7 +27,7 @@ export class DocumentStore {
         return this.store.findOne({"_id" : id}).then( checkout );
     }
 
-    deleteById(id: string): Promise<TMD.Document> {
+    deleteById(id: string): Promise<number> {
         L.info(`delete document with id ${id}`);
          return this.store.remove({ "_id" : id}, { multi: false });  
     }
