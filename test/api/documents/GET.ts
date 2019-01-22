@@ -1,11 +1,12 @@
 import 'mocha';
 
-import { expect } from 'chai';
+import { expect, assert } from 'chai';
 import request from 'supertest';
 import Server from '../../../server';
 import fixtureLoader from '../../fixture/loader';
 import fixture from '../../fixture/sample-1';
 import httpStatus from "http-status";
+
 
 describe('GET Documents', () => {
 
@@ -49,11 +50,10 @@ describe('GET Documents', () => {
     it('should get document content from document id', () =>
         request(Server)
             .get('/api/v1/documents/1/content')
-            .expect('Content-Type', /json/)
-            .expect(httpStatus.NOT_FOUND)
+            .expect(httpStatus.OK)
+            .expect('Content-Type', /text\/markdown/)
             .then(r => {
-                expect(r.body)
-                    .to.be.an('object')
-                    .that.has.property('message');
+                assert.equal(r.header['content-length'],37)
+                assert.equal(r.header['content-disposition'],"attachment; filename=\"orig-doc.txt\"")
             }));
 });
