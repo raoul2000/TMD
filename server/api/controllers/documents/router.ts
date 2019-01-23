@@ -15,4 +15,5 @@ export default express.Router()
     .get('/:id', controller.byId)
     .delete('/:id', controller.deleteById)
     .get('/:id/content', controller.content)
-    .get('/:id/tags', controller.tags);
+    .get('/:id/tags', controller.tags)
+    .put('/:id/tags', controller.updateTags);

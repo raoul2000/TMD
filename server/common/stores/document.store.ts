@@ -43,6 +43,15 @@ export class DocumentStore {
             .then(this.store.insert)
             .then( checkout );
     }
+
+    updateTags(id: string, tags:TMD.Tag[]): Promise<TMD.Document> {
+        L.info(`updating tags for document with id ${id}`);
+        return this.store.update(
+                { "_id" : id},
+                { $set : { "tags" : tags}},
+                { multi: false })
+            .then( () => this.byId(id) );
+    }
 }
 
 export default new DocumentStore();

@@ -1,21 +1,33 @@
 @baseURL = http://127.0.0.1:3000
 @path = api/v1
 
+@docId = BNBAVqz5OFIsgEg9
+
 ### get all documents
 
 GET {{baseURL}}/{{path}}/documents 
 
 ### Get content of a document by Id
 
-GET {{baseURL}}/{{path}}/documents/TVfu03J6tcAHRnMa/content
+GET {{baseURL}}/{{path}}/documents/{{docId}}/content
 
 ### Get Single Document by Id
 
-GET {{baseURL}}/{{path}}/documents/DfZ5XEaDsAJJ4hgq
+GET {{baseURL}}/{{path}}/documents/{{docId}}
 
 ### Get tags from a Document by Id
 
-GET {{baseURL}}/{{path}}/documents/8hOsEm0UT89dOFzEF/tags
+GET {{baseURL}}/{{path}}/documents/{{docId}}/tags
+
+### Get tags from a Document by Id
+
+PUT {{baseURL}}/{{path}}/documents/{{docId}}/tags
+Content-Type: application/json
+
+[
+    { "name" : "NEW_A"},
+    { "name" : "NEW_B"}
+]
 
 ### create document
 
@@ -39,7 +51,7 @@ Content-Type: image/jpeg
 
 ### delete a document by id
 
-DELETE {{baseURL}}/{{path}}/documents/WXMAUKW6cOipfXq2
+DELETE {{baseURL}}/{{path}}/documents/{{docId}}
 
 ### delete All (not available)
 

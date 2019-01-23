@@ -180,6 +180,19 @@ paths:
           description: Return the list of tags assigned to this document
         404:
           description: Document not found
+    put:
+      tags:
+        - Documents
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The id of the document to update tags to
+          type: string
+        - name: tags
+          in: body
+          required: true
+          description: array of tags names
 
 
   # Tag ####################################################################

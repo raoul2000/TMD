@@ -21,6 +21,22 @@ export class DocumentsService {
     return DocumentStore.deleteById(id);
   }
 
+  updateTags(id: string, tags:TMD.Tag[]): Promise<TMD.Document> {
+    L.info(`update tags for document with id ${id}`);
+    // we should validate tags schema
+
+    // insert all tags with no id
+    const tagToInsert = tags
+      .filter(tag => !tag.id);
+
+    return TagStore.insert(tagToInsert)
+      .then(result => {
+        let newInsertedTags = !Array.isArray(result) ? [result] : result;
+        return newInsertedTags.concat(tags.filter(tag => tag.id));
+      })
+      .then( documentTags => DocumentStore.updateTags(id, documentTags));    
+  }
+
   /**
    * 
    * @param name string 
