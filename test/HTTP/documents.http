@@ -1,19 +1,23 @@
 @baseURL = http://127.0.0.1:3000
 @path = api/v1
 
-###
+### get all documents
 
 GET {{baseURL}}/{{path}}/documents 
 
-###
+### Get content of a document by Id
 
 GET {{baseURL}}/{{path}}/documents/TVfu03J6tcAHRnMa/content
 
-###
+### Get Single Document by Id
 
 GET {{baseURL}}/{{path}}/documents/DfZ5XEaDsAJJ4hgq
 
-###
+### Get tags from a Document by Id
+
+GET {{baseURL}}/{{path}}/documents/8hOsEm0UT89dOFzEF/tags
+
+### create document
 
 POST {{baseURL}}/{{path}}/documents
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
@@ -33,7 +37,7 @@ Content-Type: image/jpeg
 < ../api/documents/content-file/image-1.jpg
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 
-###
+### delete a document by id
 
 DELETE {{baseURL}}/{{path}}/documents/WXMAUKW6cOipfXq2
 

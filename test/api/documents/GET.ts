@@ -53,7 +53,17 @@ describe('GET Documents', () => {
             .expect(httpStatus.OK)
             .expect('Content-Type', /text\/markdown/)
             .then(r => {
-                assert.equal(r.header['content-length'],37)
-                assert.equal(r.header['content-disposition'],"attachment; filename=\"orig-doc.txt\"")
+                assert.equal(r.header['content-length'], 37)
+                assert.equal(r.header['content-disposition'], "attachment; filename=\"orig-doc.txt\"")
             }));
+
+    it('should get tags for a document by id', () =>
+        request(Server)
+            .get('/api/v1/documents/1/tags')
+            .expect('Content-Type', /json/)
+            .then(r => {
+                console.log(r.body);
+                assert.deepEqual(r.body,[ { _id: '1', name: 'tagName 1' } ]);
+            }));
+
 });

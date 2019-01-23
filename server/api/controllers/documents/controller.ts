@@ -21,6 +21,15 @@ export class Controller {
     });
   }
 
+  tags(req: Request, res: Response): void {
+    DocumentsService.byId(req.params.id).then(r => {
+      if (r) res.json(r.tags);
+      else res
+        .status(httpStatus.NOT_FOUND)
+        .json(new TMDError(`document not found (id = ${req.params.id})`));
+    });
+  }
+
   content(req: Request, res: Response): void {
     DocumentsService.byId(req.params.id).then(r => {
       if (r) {

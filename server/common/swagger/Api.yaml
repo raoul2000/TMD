@@ -165,6 +165,22 @@ paths:
         404:
           description: Document not found
 
+  /documents/{id}/tags:
+    get:
+      tags:
+        - Documents
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The id of the document to read tags from
+          type: string
+      responses:
+        200:
+          description: Return the list of tags assigned to this document
+        404:
+          description: Document not found
+
 
   # Tag ####################################################################
   
