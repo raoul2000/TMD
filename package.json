@@ -2,7 +2,15 @@
   "name": "api-ts",
   "version": "1.0.0",
   "description": "My cool TypeScript app",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types" : "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/raoul2000/TMD.git"
+  },
+  "bugs": {
+    "url": "https://github.com/raoul2000/TMD/issues"
+   },
   "scripts": {
     "start": "node dist/index.js",
     "compile": "ts-node build.ts && tsc",

@@ -6,6 +6,7 @@
     "esModuleInterop": true,
     "sourceMap": true,
     "moduleResolution": "node",
+    "declaration": true,
     "outDir": "dist",
     "typeRoots": ["node_modules/@types"],
     "plugins": [ { "name": "typescript-tslint-plugin"}]
