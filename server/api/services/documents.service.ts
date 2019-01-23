@@ -3,6 +3,8 @@ import DocumentStore from '../../common/stores/document.store';
 import { TMD } from '../../types';
 import Repository from '../../common/content/repository';
 import TagStore from '../../common/stores/tag.store';
+import TagService from './tags.service';
+
 
 export class DocumentsService {
 
@@ -29,11 +31,7 @@ export class DocumentsService {
     const tagToInsert = tags
       .filter(tag => !tag.id);
 
-    return TagStore.insert(tagToInsert)
-      .then(result => {
-        let newInsertedTags = !Array.isArray(result) ? [result] : result;
-        return newInsertedTags.concat(tags.filter(tag => tag.id));
-      })
+    return TagStore.insertMissing(tagToInsert)
       .then( documentTags => DocumentStore.updateTags(id, documentTags));    
   }
 
@@ -60,6 +58,8 @@ export class DocumentsService {
 
     // store tags linked assigned to the document
     let documentTags = null;
+    return 
+    /*
     return TagStore.insert(tagToInsert)
       .then(result => {
         let newInsertedTags = !Array.isArray(result) ? [result] : result;
@@ -72,6 +72,7 @@ export class DocumentsService {
         "tags": documentTags,
         "content": contentMetadata
       }));
+      */
   }
 }
 

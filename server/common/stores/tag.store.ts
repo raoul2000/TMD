@@ -49,6 +49,20 @@ export class TagStore {
             .then(this.store.insert)
             .then( checkout );
     }
+
+    insertMissing(tag: TMD.Tag[]): Promise<TMD.Tag[]> {
+        L.info('create missing tag(s)');
+
+        let tagToCreate = [], tagCreated = [];
+        tag.forEach( t => {
+            if( t.id ) tagCreated.push(t);
+            else tagToCreate.push(t);
+        });
+
+        return this.store.insert(tagToCreate)
+            .then( checkout )
+            .then( newTags => tagCreated.concat(newTags));
+    }
 }
 
 export default new TagStore();
