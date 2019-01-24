@@ -3,8 +3,10 @@ class TMDError {
     private message: string;
     private detail:any;
 
-    constructor(msg:string, errorDetail?:any) {
-        this.message = msg;
+    constructor(cause:any, errorDetail?:any) {
+        if( typeof cause === 'string'){
+            this.message = cause;
+        }
         this.detail = errorDetail;
     }
     getMessage():string {

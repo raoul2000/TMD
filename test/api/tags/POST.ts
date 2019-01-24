@@ -2,7 +2,6 @@ import 'mocha';
 import { expect, assert } from 'chai';
 import request from 'supertest';
 import Server from '../../../server';
-import { doesNotReject } from 'assert';
 import { before } from 'mocha';
 import fixture from '../../fixture/sample-1';
 import TagStore from '../../../server/common/stores/tag.store';

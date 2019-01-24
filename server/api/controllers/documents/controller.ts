@@ -55,19 +55,21 @@ export class Controller {
       else res
         .status(httpStatus.NOT_FOUND)
         .json(new TMDError(`tag not found (id = ${req.params.id})`));
-    });
+    }).catch( err => {
+      res
+        .status(httpStatus.INTERNAL_SERVER_ERROR)
+        .json(err);
+    });;
   }
 
   create(req: Request, res: Response, next: NextFunction): void {
-    console.log(req.file);
-    console.log(req.body);
+    //console.log(req.file);
+    //console.log(req.body);
 
     // build tag Id list
     if (!req.body.tags) {
       res.status(httpStatus.INTERNAL_SERVER_ERROR)
-        .json({
-          "errorMessage": "missing parameter 'tags"
-        });
+        .json(new TMDError("missing parameter 'tags"));
       return;
     }
 
@@ -96,9 +98,7 @@ export class Controller {
     // send error Response
     const sendErrorResponse = (err) => res
       .status(httpStatus.INTERNAL_SERVER_ERROR)
-      .json({
-        "errorMessage": err
-      });
+      .json(err);
 
     // create the document
     DocumentsService

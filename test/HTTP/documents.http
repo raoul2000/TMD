@@ -1,7 +1,7 @@
 @baseURL = http://127.0.0.1:3000
 @path = api/v1
 
-@docId = BNBAVqz5OFIsgEg9
+@docId = 1
 
 ### get all documents
 
