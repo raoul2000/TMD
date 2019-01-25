@@ -1,7 +1,6 @@
 import L from '../../common/logger';
 import TagStore from '../../common/stores/tag.store';
 import { TMD } from '../../types';
-import validateSchema from '../../common/schema/tag.schema';
 import TMDError from '../../common/error';
 
 export class TagsService {
@@ -26,14 +25,6 @@ export class TagsService {
 
     create(tag: TMD.Tag[] | TMD.Tag): Promise<TMD.Tag[] | TMD.Tag> {
         L.info('create tag(s)');
-
-        // TODO: review schema validation
-        /*
-        const validationResult = validateSchema(tag);
-        if( validationResult.find( (validation) => validation.error !== null) ) {
-            return Promise.reject(new TMDError("invalid tag", validationResult));
-        }
-        */
 
         return TagStore
             .insert(tag) 

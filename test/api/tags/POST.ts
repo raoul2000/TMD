@@ -39,7 +39,7 @@ describe('POST Tags', () => {
             .then(r => {
                 console.log(r.body);
                 assert.isObject(r.body);
-                assert.propertyVal(r.body, "message", "invalid tag");
+                assert.propertyVal(r.body, "message", "tag validation failed");
             })
     );
 

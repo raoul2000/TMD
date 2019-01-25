@@ -9,3 +9,7 @@ const validate = (schema: joi.ObjectSchema, o: any | Array<any>) : Array<joi.Val
 };
 
 export default validate;
+
+export const getValidationErrors = (validationResult: any): any[] => {    
+    return validationResult.filter( validation => validation.error !== null); 
+};

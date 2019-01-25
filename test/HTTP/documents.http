@@ -1,11 +1,15 @@
 @baseURL = http://127.0.0.1:3000
 @path = api/v1
 
-@docId = 1
+@docId = cWAqSWEfiipJvALi
 
 ### get all documents
 
 GET {{baseURL}}/{{path}}/documents 
+
+### get all tags
+
+GET {{baseURL}}/{{path}}/tags 
 
 ### Get content of a document by Id
 

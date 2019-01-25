@@ -26,14 +26,16 @@ export class DocumentsService {
     L.info(`update tags for document with id ${id}`);
     // we should validate tags schema
 
-    // insert all tags with no id
+    // only tags with no id must be inserted
     const tagToInsert = tags.filter(tag => !tag.id);
 
     return TagStore.insert(tagToInsert)
+      // merge inserted tag with the ones already inserted
       .then(result => {
         let newInsertedTags = !Array.isArray(result) ? [result] : result;
         return newInsertedTags.concat(tags.filter(tag => tag.id));
       })
+      // updates the tag property of th document given its id
       .then(documentTags => DocumentStore.updateTags(id, documentTags))
       .catch((err) => {
         if (err.errorType && err.errorType == "uniqueViolated") {

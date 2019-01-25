@@ -3,6 +3,9 @@ import Nedb from 'nedb';
 import DB from 'nedb-promise';
 import {TMD} from '../../types';
 import {checkin, checkout} from './helpers';
+import {getValidationErrors} from '../schema/validate';
+import validate from '../schema/tag.schema';
+import TMDError from '../error';
 
 export class DocumentStore {
 
@@ -39,8 +42,18 @@ export class DocumentStore {
 
     insert(documents:TMD.Document[] | TMD.Document):Promise<TMD.Document[]|TMD.Document> {
         L.info('insert one or more documents');
-        return Promise.resolve(checkin(documents))
-            .then(this.store.insert)
+        // TODO: document checkin/checkout implies processing assigned tags ids (and not only document tag)
+        const checkedDocuments = checkin(documents);
+        // TODO: document validation
+/*
+        const validationErrors = getValidationErrors(validate(checkedDocuments));
+        if( validationErrors.length > 0) {
+            L.error('document validation failed');
+            L.debug(validationErrors);
+            return Promise.reject(new TMDError("document validation failed",validationErrors));
+        }
+*/
+        return this.store.insert(checkedDocuments)
             .then( checkout );
     }
 
