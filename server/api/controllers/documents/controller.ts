@@ -48,14 +48,14 @@ export class Controller {
     });
   }
 
-  
+
   updateTags(req: Request, res: Response): void {
     DocumentsService.updateTags(req.params.id, req.body).then(r => {
       if (r) res.json(r);
       else res
         .status(httpStatus.NOT_FOUND)
         .json(new TMDError(`tag not found (id = ${req.params.id})`));
-    }).catch( err => {
+    }).catch(err => {
       res
         .status(httpStatus.INTERNAL_SERVER_ERROR)
         .json(err);
