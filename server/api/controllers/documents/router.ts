@@ -2,6 +2,8 @@ import express from 'express';
 import controller from './controller'
 import l from '../../../common/logger';
 
+console.log(`loading ${__filename}`);
+
 
 import multer from 'multer';
 const uploadFolder = process.env['UPLOAD_PATH'] || 'upload';

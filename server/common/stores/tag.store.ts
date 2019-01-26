@@ -7,6 +7,8 @@ import validate from '../schema/tag.schema';
 import {getValidationErrors} from '../schema/validate';
 import TMDError from '../error';
 
+console.log(`loading ${__filename}`);
+
 export class TagStore {
 
     private store:any = null;

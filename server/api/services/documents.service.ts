@@ -5,6 +5,8 @@ import Repository from '../../common/content/repository';
 import TagStore from '../../common/stores/tag.store';
 import TMDError from '../../common/error';
 
+console.log(`loading ${__filename}`);
+
 export class DocumentsService {
 
   all(): Promise<TMD.Document[]> {

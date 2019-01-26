@@ -8,6 +8,8 @@ import cookieParser from 'cookie-parser';
 import swaggerify from './swagger';
 import l from './logger';
 
+console.log(`loading ${__filename}`);
+
 l.debug('__NEW APP EXPRESS__');
 const app = express();
 

@@ -6,6 +6,8 @@ import fse from 'fs-extra';
 import fs from 'fs';
 import TMDError from '../../../common/error';
 
+console.log(`loading ${__filename}`);
+
 export class Controller {
   all(req: Request, res: Response): void {
     DocumentsService.all().then(r => res.json(r));
