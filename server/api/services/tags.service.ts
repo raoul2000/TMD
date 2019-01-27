@@ -22,7 +22,6 @@ export class TagsService {
         return TagStore.deleteById(id);
     }
 
-
     create(tag: TMD.Tag[] | TMD.Tag): Promise<TMD.Tag[] | TMD.Tag> {
         L.info('create tag(s)');
 

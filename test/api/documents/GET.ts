@@ -62,8 +62,7 @@ describe('GET Documents', () => {
             .get('/api/v1/documents/1/tags')
             .expect('Content-Type', /json/)
             .then(r => {
-                console.log(r.body);
-                assert.deepEqual(r.body,[ { _id: '1', name: 'tagName 1' } ]);
+                assert.deepEqual(r.body,[ { id: '1', name: 'tagName 1' } ]);
             }));
 
 });

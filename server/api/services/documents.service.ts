@@ -7,7 +7,23 @@ import TMDError from '../../common/error';
 
 console.log(`loading ${__filename}`);
 
+
 export class DocumentsService {
+
+  /**
+   * Replaces the list of tag Ids assigned to the 'tags' property
+   * with the corresponding list of tags object and returns the resulting document
+   * 
+   * @param doc the document object to process
+   */
+  expandTagId(doc: TMD.Document): Promise<TMD.Document> {
+    if( ! doc ) {
+      return Promise.resolve(doc);
+    }
+    L.debug('expanding tags');
+    return TagStore.byId(doc.tags)
+      .then(tags => Object.assign(doc, { "tags": tags }));
+  }
 
   all(): Promise<TMD.Document[]> {
     L.info('fetch all documents');
@@ -16,7 +32,8 @@ export class DocumentsService {
 
   byId(id: string): Promise<TMD.Document> {
     L.info(`fetch document with id ${id}`);
-    return DocumentStore.byId(id);
+    return DocumentStore.byId(id)
+      .then( this.expandTagId );
   }
 
   deleteById(id: string): Promise<number> {
@@ -35,10 +52,11 @@ export class DocumentsService {
       // merge inserted tag with the ones already inserted
       .then(result => {
         let newInsertedTags = !Array.isArray(result) ? [result] : result;
-        return newInsertedTags.concat(tags.filter(tag => tag.id));
+        return newInsertedTags.concat(tags.filter(tag => tag.id)).map(tag => tag.id);
       })
-      // updates the tag property of th document given its id
-      .then(documentTags => DocumentStore.updateTags(id, documentTags))
+      // updates the tag property of the document given its id
+      .then(documentTagIds => DocumentStore.updateTags(id, documentTagIds))
+      .then( this.expandTagId )
       .catch((err) => {
         if (err.errorType && err.errorType == "uniqueViolated") {
           return Promise.reject(new TMDError('duplicate tag name', err));
@@ -68,22 +86,23 @@ export class DocumentsService {
     const tagToInsert = tags.filter(tag => !tag.id);
 
     // store tags linked assigned to the document
-    let documentTags = null;
+    let documentTagIds = null;
     return TagStore.insert(tagToInsert)
-      .catch( err => {
-        return Promise.reject(new TMDError('failed to insert tag',err));
+      .catch(err => {
+        return Promise.reject(new TMDError('failed to insert tag', err));
       })
       .then(result => {
         let newInsertedTags = !Array.isArray(result) ? [result] : result;
-        documentTags = newInsertedTags.concat(tags.filter(tag => tag.id));
+        documentTagIds = newInsertedTags.concat(tags.filter(tag => tag.id)).map(tag => tag.id);
         return true;
       })
       .then(() => Repository.write(file))
       .then(contentMetadata => DocumentStore.insert({
         "name": name,
-        "tags": documentTags,
+        "tags": documentTagIds,
         "content": contentMetadata
-      }));
+      }))
+      .then( this.expandTagId );
   }
 }
 

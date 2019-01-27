@@ -26,12 +26,12 @@ describe('PUT Documents', () => {
             .then(r => {
                 let doc = r.body;
                 console.log(doc);
+                // WARN : tag order in property 'tags' is not preserved
                 assert.isArray(doc.tags);
                 assert.lengthOf(doc.tags,2);
-                assert.equal(doc.tags[0].name , "my tag");
-                assert.deepEqual(doc.tags[1], { id: '2', name: 'tagName 2' });
+                assert.equal(doc.tags[1].name , "my tag");
+                assert.deepEqual(doc.tags[0], { id: '2', name: 'tagName 2' });
             }));
-
 
     it('fails on duplicate tag name update', () =>
         request(Server)

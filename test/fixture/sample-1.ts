@@ -9,9 +9,7 @@ export default {
         {
             "_id" : "1",
             "name" : "document 1",
-            "tags" : [
-                { "_id" : "1", "name" : "tagName 1" }
-            ],
+            "tags" : [ "1"],
             "content" : {
                 "path" : path.join(__dirname, '..','api', 'documents', 'content-file', 'file-1.md'),
                 "originalName" : "orig-doc.txt",

@@ -57,14 +57,19 @@ export class DocumentStore {
             .then( checkout );
     }
 
-    updateTags(id: string, tags:TMD.Tag[]): Promise<TMD.Document> {
+    updateTags(id: string, tagIds:string[]): Promise<TMD.Document> {
         L.info(`updating tags for document with id ${id}`);
         return this.store.update(
                 { "_id" : id},
-                { $set : { "tags" : tags}},
+                { $set : { "tags" : tagIds}},
                 { multi: false })
             .then( () => this.byId(id) );
     }
+/*
+    byTags(tagIds: string[]): Promise<any> {
+        this.store.find({ "tags" : {}})
+    }
+*/    
 }
 
 export default new DocumentStore();

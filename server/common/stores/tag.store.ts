@@ -31,9 +31,15 @@ export class TagStore {
         return this.store.find({}).then( checkout );
     }
 
-    byId(id: string): Promise<TMD.Tag> {
+    byId(id: string | string[]): Promise<TMD.Tag> {
         L.info(`fetch tag with id ${id}`);
-        return this.store.findOne({"_id" : id}).then( checkout );
+
+        const find = Array.isArray(id)
+            ? this.store.find({"_id" : { "$in" : id} })
+            : this.store.findOne({"_id" : id});
+
+        return find
+            .then( checkout );    
     }
     
     /**
