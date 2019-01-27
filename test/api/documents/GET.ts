@@ -36,7 +36,7 @@ describe('GET Documents', () => {
                     .equal('document 1');
             }));
 
-    it('should fail to get a document by unkownw id', () =>
+    it('should fail to get a document by unkowwn id', () =>
         request(Server)
             .get('/api/v1/documents/NOT_FOUND')
             .expect('Content-Type', /json/)

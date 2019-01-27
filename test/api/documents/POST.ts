@@ -43,7 +43,7 @@ describe('POST Documents', () => {
                 assert.lengthOf(tagIds, 3, "all tags must have id");
             }));
 
-    it('should fails add a new document', () =>
+    it('should fails add a new document on duplicate tag name', () =>
         request(Server)
             .post('/api/v1/documents')
             .attach('content', path.join(__dirname, 'content-file/file-1.md'))

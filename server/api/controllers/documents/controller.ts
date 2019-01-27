@@ -15,7 +15,6 @@ export class Controller {
 
   byId(req: Request, res: Response): void {
     DocumentsService.byId(req.params.id).then(r => {
-
       if (r) res.json(r);
       else res
         .status(httpStatus.NOT_FOUND)
@@ -46,7 +45,7 @@ export class Controller {
       if (r !== 0) res.end();
       else res
         .status(httpStatus.NOT_FOUND)
-        .json(new TMDError(`tag not found (id = ${req.params.id})`));
+        .json(new TMDError(`document not found (id = ${req.params.id})`));
     });
   }
 
@@ -56,7 +55,7 @@ export class Controller {
       if (r) res.json(r);
       else res
         .status(httpStatus.NOT_FOUND)
-        .json(new TMDError(`tag not found (id = ${req.params.id})`));
+        .json(new TMDError(`document not found (id = ${req.params.id})`));
     }).catch(err => {
       res
         .status(httpStatus.INTERNAL_SERVER_ERROR)
@@ -69,7 +68,7 @@ export class Controller {
     //console.log(req.body);
 
     // build tag Id list
-    if (!req.body.tags) {
+    if ( !req.body.tags) {
       res.status(httpStatus.INTERNAL_SERVER_ERROR)
         .json(new TMDError("missing parameter 'tags"));
       return;
