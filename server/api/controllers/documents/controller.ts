@@ -105,14 +105,8 @@ export class Controller {
     DocumentsService
       .create(req.body.name, tags, req.file)
       .then(
-        (insertedDoc) => {
-          return deleteUploadFile()
-            .then(() => sendSuccessResponse(insertedDoc));
-        },
-        (error) => {
-          return deleteUploadFile()
-            .then(() => sendErrorResponse(error));
-        }
+        (insertedDoc) => deleteUploadFile().then(() => sendSuccessResponse(insertedDoc)),
+        (error)       => deleteUploadFile().then(() => sendErrorResponse(error))
       );
   }
 }
