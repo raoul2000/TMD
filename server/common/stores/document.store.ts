@@ -65,11 +65,11 @@ export class DocumentStore {
                 { multi: false })
             .then( () => this.byId(id) );
     }
-/*
-    byTags(tagIds: string[]): Promise<any> {
-        this.store.find({ "tags" : {}})
+
+    findByTags(tagIds: string[]): Promise<TMD.Document[]> {
+        return this.store.find({ "tags" : { $in : tagIds}})
+            .then( checkout );
     }
-*/    
 }
 
 export default new DocumentStore();

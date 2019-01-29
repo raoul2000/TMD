@@ -1,21 +1,17 @@
 import 'mocha';
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
 import request from 'supertest';
 import Server from '../../../server';
-import { before } from 'mocha';
 import fixture from '../../fixture/sample-1';
-import TagStore from '../../../server/common/stores/tag.store';
+import fixtureLoader from '../../fixture/loader';
 import httpStatus from "http-status";
 
 
 describe('POST Tags', () => {
 
     beforeEach((done) => {
-        TagStore.deleteAll()
-            .then(() => TagStore.getImplementation().insert(fixture.tags))
-            .then(() => {
-                done();
-            });
+        fixtureLoader(fixture)
+            .then(() => done());
     });
 
     it('should create a tag', () =>

@@ -3,19 +3,15 @@ import { expect } from 'chai';
 import request from 'supertest';
 import Server from '../../../server';
 import fixture from '../../fixture/sample-1';
-import TagStore from '../../../server/common/stores/tag.store';
+import fixtureLoader from '../../fixture/loader';
 import httpStatus from "http-status";
 
 
 describe('GET Tags', () => {
 
     beforeEach((done) => {
-        TagStore.deleteAll()
-            .then(() => TagStore.deleteAll())
-            .then(() => TagStore.getImplementation().insert(fixture.tags))
-            .then(() => {
-                done();
-            });
+        fixtureLoader(fixture)
+            .then(() => done());
     });
 
     it('should get all tags', () =>

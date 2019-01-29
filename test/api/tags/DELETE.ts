@@ -1,21 +1,18 @@
 import 'mocha';
-import { expect } from 'chai';
+import { expect, assert } from 'chai';
 import request from 'supertest';
 import Server from '../../../server';
 import fixture from '../../fixture/sample-1';
-import TagStore from '../../../server/common/stores/tag.store';
+import DocumentStore from '../../../server/common/stores/document.store';
+import fixtureLoader from '../../fixture/loader';
 import httpStatus from "http-status";
 
 
 describe('DELETE Tags', () => {
 
     beforeEach((done) => {
-        TagStore.deleteAll()
-            .then(() => TagStore.deleteAll())
-            .then(() => TagStore.getImplementation().insert(fixture.tags))
-            .then(() => {
-                done();
-            });
+        fixtureLoader(fixture)
+            .then(() => done());
     });
 
     it('should delete a tags', () =>
@@ -35,4 +32,14 @@ describe('DELETE Tags', () => {
                     .to.be.an('object')
                     .that.has.property('message');
             }));
+
+    it('should remove delete tag from document', () =>
+        request(Server)
+            .delete('/api/v1/tags/1')
+            .expect('Content-Length', '0')
+            .expect(httpStatus.OK)
+            .then(r => DocumentStore.byId("1")
+                .then( doc => assert.isEmpty(doc.tags, ' should not contain any tag'))
+            )
+    );
 });
