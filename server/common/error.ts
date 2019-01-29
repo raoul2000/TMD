@@ -7,7 +7,18 @@ class TMDError {
         if( typeof cause === 'string'){
             this.message = cause;
         }
-        this.detail = errorDetail;
+        this.detail = this.extractDetail(errorDetail);
+    }
+    private extractDetail(errorDetail) {
+        if( ! errorDetail ) {
+            return null;
+        }
+
+        if( errorDetail.message) {
+            return errorDetail.message;
+        }
+
+        return errorDetail;
     }
     getMessage():string {
         return this.message;

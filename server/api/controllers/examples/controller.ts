@@ -3,7 +3,6 @@ import { Request, Response } from 'express';
 
 export class Controller {
   all(req: Request, res: Response): void {
-    debugger;
     ExamplesService.all().then(r => res.json(r));
   }
 

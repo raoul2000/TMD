@@ -25,9 +25,10 @@ export class DocumentsService {
       .then(tags => Object.assign(doc, { "tags": tags }));
   }
 
-  all(): Promise<TMD.Document[]> {
-    L.info('fetch all documents');
-    return DocumentStore.all();
+  all(query?:any): Promise<TMD.Document[]> {
+    L.info(`fetch all documents. query = ${query}`);
+    return DocumentStore.all(query)
+      .then( docs => Promise.all( docs.map( this.expandTagId )));
   }
 
   byId(id: string): Promise<TMD.Document> {

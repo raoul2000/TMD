@@ -1,0 +1,38 @@
+@baseURL = http://127.0.0.1:3000
+@path = api/v1
+
+@docId = KmO6PzJsc8LH5KDP
+
+### get all documents
+
+
+GET {{baseURL}}/{{path}}/documents 
+
+
+### list all tags
+
+GET {{baseURL}}/{{path}}/tags 
+
+### query by tags
+# the query is provided as a JSON object encodedURI 
+# example : encodeURIComponent(JSON.stringify(
+#  { "tags" : { "$in" : [ "1", "2"]}}
+# ))
+
+GET {{baseURL}}/{{path}}/documents
+    ?query=%7B%22tags%22%3A%7B%22%24in%22%3A%5B%221%22%2C%222%22%5D%7D%7D
+
+### query by tags ERROR
+
+GET {{baseURL}}/{{path}}/documents
+    ?query=__%7B%22tags%22%3A%7B%22%24in%22%3A%5B%221%22%2C%222%22%5D%7D%7D
+
+### query by tags ERROR
+
+GET {{baseURL}}/{{path}}/documents
+    ?tags=1&tags=sEsEwMg5f7rH5KiZ
+
+### query by tags ERROR
+
+GET {{baseURL}}/{{path}}/documents
+    ?tags=1,sEsEwMg5f7rH5KiZ

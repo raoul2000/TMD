@@ -20,9 +20,9 @@ export class DocumentStore {
         return this.store;
     }
 
-    all(): Promise<TMD.Document[]> {
+    all(query?:any): Promise<TMD.Document[]> {
         L.info('fetch all documents');
-        return this.store.find({}).then( checkout );
+        return this.store.find( query || {}).then( checkout );
     }
 
     byId(id: string): Promise<TMD.Document> {

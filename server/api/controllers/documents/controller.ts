@@ -5,12 +5,52 @@ import httpStatus from 'http-status';
 import fse from 'fs-extra';
 import fs from 'fs';
 import TMDError from '../../../common/error';
+import { tags } from 'joi';
 
 console.log(`loading ${__filename}`);
 
 export class Controller {
+  /**
+   * Returns all documents.
+   * 
+   * @param req request
+   * @param res response
+   */
   all(req: Request, res: Response): void {
-    DocumentsService.all().then(r => res.json(r));
+    let q:any = null,
+      validQuery:boolean = true,
+      tagIds = [];
+
+    // processing the TAGS query selector
+    if( req.query.tags) {
+      if( typeof req.query.tags === 'string'){
+        let str = req.query.tags as string;
+        tagIds = str.split(',').map( tag => tag.trim()).filter( tag => tag.length != 0);
+      } else if( Array.isArray(req.query.tags)) {
+        tagIds = req.query.tags as Array<string>;
+      }
+      if(tagIds.length !== 0) {
+        q = { "tags" : { "$in" : tagIds}};
+      }
+    }
+
+    // parse the query param into an object
+    // NOTE : if the TAGS query selector is set, ignore the QUERY param
+    if ( q === null && req.query.query) {
+      try {
+        q = JSON.parse(req.query.query);
+      } catch (error) {
+        validQuery = false;
+        res
+          .status(httpStatus.INTERNAL_SERVER_ERROR)
+          .json(new TMDError("query is not a valid JSON object",error));
+      }
+    }
+
+    if(validQuery) {
+      L.debug('query = ',q);
+      DocumentsService.all(q).then(r => res.json(r));
+    }
   }
 
   byId(req: Request, res: Response): void {
@@ -68,7 +108,7 @@ export class Controller {
     //console.log(req.body);
 
     // build tag Id list
-    if ( !req.body.tags) {
+    if (!req.body.tags) {
       res.status(httpStatus.INTERNAL_SERVER_ERROR)
         .json(new TMDError("missing parameter 'tags"));
       return;
@@ -106,7 +146,7 @@ export class Controller {
       .create(req.body.name, tags, req.file)
       .then(
         (insertedDoc) => deleteUploadFile().then(() => sendSuccessResponse(insertedDoc)),
-        (error)       => deleteUploadFile().then(() => sendErrorResponse(error))
+        (error) => deleteUploadFile().then(() => sendErrorResponse(error))
       );
   }
 }

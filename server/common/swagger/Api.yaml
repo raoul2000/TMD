@@ -86,6 +86,17 @@ paths:
       tags:
         - Documents
       description: Fetch all documents
+      parameters:
+        - name: query
+          in: query
+          required: false
+          type: string
+          description: a query object to select specific documents
+        - name: tags
+          in: query
+          required: false
+          type: string
+          description: comma separated list of tag ids assigned to the returned document      
       responses:
         200:
           description: Returns all documents
