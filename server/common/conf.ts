@@ -1,31 +1,45 @@
 import validate from './schema/conf.schema';
 import {getValidationErrors} from './schema/validate';
 import TMDError from './error';
+import {TMD} from '../types';
+
 
 let defaultSettings = {
     "param1" : "value1"
 };
 
-let instance = null;
+let instance:TMD.ConfigurationSettings = null;
 
-const initConf =  (settings) => {
+const mergeSettings = (settings:any, def:TMD.ConfigurationSettings): TMD.ConfigurationSettings => {
+    return {
+        "param1" : settings.param1 || def.param1
+    };
+}
+
+const initConf =  (settings?:object ):TMD.ConfigurationSettings => {
     if(instance) {
         throw new TMDError("configuration already initialized");
     } 
 
-    const validationErrors = getValidationErrors(validate(settings));
+    if( !settings) {
+        instance = defaultSettings;
+    } else {
+        instance = mergeSettings(settings, defaultSettings);
+    }
+
+    const validationErrors = getValidationErrors(validate(instance));
     
     if( validationErrors.length !== 0) {
         throw new TMDError("invalid configuration object", validationErrors);
     }
 
-    instance = Object.freeze(settings);
+    instance = Object.freeze(instance) as TMD.ConfigurationSettings ;
     return instance;
 };
 
-const readConf = () => {
+const readConf = ():TMD.ConfigurationSettings=> {
     if(!instance) {
-        return initConf(defaultSettings);
+        return initConf();
     }
     return instance;
 };

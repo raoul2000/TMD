@@ -1,5 +1,8 @@
 
 export declare namespace TMD {
+    interface ConfigurationSettings {
+        param1: string;
+    }
     interface Tag {
         id?: string;
         name:string;
