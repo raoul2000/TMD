@@ -12,6 +12,7 @@ conf.init({ "port" : 7777});
 TagStore.initialize({ filename: path.join(__dirname,'../tmp/store/tag-store.json'), autoload: true });
 DocumentStore.initialize({ filename: path.join(__dirname,'../tmp/store/document-store.json'), autoload: true });
 
+
 /*
 const server = new Server();
 server.listen('1234');

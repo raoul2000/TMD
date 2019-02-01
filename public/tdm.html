@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>TDM</title>
+</head>
+
+<body>
+    <h1>TDM</h1>
+    <hr />
+    <h3>Add new document</h3>
+
+    <form method="post" enctype="multipart/form-data">
+        file : <input type="file" name="content"><br />
+        tags : <input type="text" name="tags" id="input-tags"><br />
+        name : <input type="text" name="name" id="input-name"><br />
+        <input type="submit" value="submit" name="submit">
+    </form>
+
+    <hr />
+    <h3>Search</h3>
+
+    <input type="text" id="tags" name="tags" value="TAG-A, TAG-B"> <button id="btn-search-doc">search</button>
+    <div id="result-set">
+
+    </div>
+    <hr />
+    <script>
+        console.log('ready');
+        let refTagList = [];
+        /**
+         * Document creation : upload and tags
+         **/
+        const initDocumentCreation = () => {
+            const form = document.querySelector('form');
+            // Listen for form submit
+            form.addEventListener('submit', e => {
+                e.preventDefault();
+
+                // process file content (upload) ////////////////////////////////////////
+
+                const files = document.querySelector('[type=file]').files;
+                if (files.length === 0) {
+                    console.warn('no file selected');
+                    return;
+                }
+
+                const formData = new FormData();
+                for (let i = 0; i < files.length; i++) {
+                    let file = files[i];
+
+                    formData.append('content', file);
+                }
+
+                // process tags ///////////////////////////////////////////////////////////
+
+                let inputTags = document.getElementById('input-tags').value.split(',')
+                    .map(tagName => tagName.trim())
+                    .filter(tagName => tagName)
+                    .map(tagName => {
+                        const rTag = refTagList.find(refTag => refTag.name === tagName);
+                        if (rTag) {
+                            return rTag;
+                        } else {
+                            return { "name": tagName };
+                        }
+                    });
+                console.log('inputTags = ', inputTags);
+                formData.append('tags', JSON.stringify(inputTags));
+
+                // process document name /////////////////////////////////////////////////////
+
+                let docName = document.getElementById('input-name').value.trim();
+                if (!docName) {
+                    console.war('missing document name');
+                    return;
+                }
+                console.log(`documentName = ${docName}`);
+                formData.append('name', docName);
+
+                // Add document 
+
+                fetch("/api/v1/documents", {
+                    method: 'POST',
+                    body: formData
+                }).then(response => {
+                    console.log(response);
+
+                });
+            });
+        };
+
+        const renderDocumentResultSet = (docs) => {
+            console.log(docs);
+            const html = docs.map(doc => `<div id="${doc.id}">${doc.name}</div>`);
+            document.getElementById('result-set').innerHTML = html;
+        };
+
+        const initDocumentSearch = () => {
+            document.getElementById('btn-search-doc').addEventListener('click', (ev) => {
+                // get user input (tags)
+                let tagIds = document.getElementById('tags').value.split(',')
+                    .map(tag => tag.trim())
+                    .filter(tag => tag.length)
+                    .map(tag => refTagList.find(refTag => refTag.name === tag))
+                    .filter(item => item)
+                    .map(tag => tag.id);
+
+                console.log(tagIds);
+                var url = new URL('http://localhost:3000/api/v1/documents');
+                /*
+                url.search = new URLSearchParams({
+                    "tags": tagIds.join(',')
+                });*/
+                fetch(url)
+                    .then(resp => resp.json())
+                    .then(renderDocumentResultSet);
+            });
+        };
+        
+        // Entry Point
+        document.addEventListener("DOMContentLoaded", function (event) {
+            console.log("DOM fully loaded and parsed");
+            fetch("/api/v1/tags")
+                .then(resp => resp.json())
+                .then(result => {
+                    refTagList = result;
+                    initDocumentCreation();
+                    initDocumentSearch();
+                });
+        }); 
+    </script>
+</body>
+
+</html>
