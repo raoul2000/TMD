@@ -1,6 +1,10 @@
 
 export declare namespace TMD {
     interface ConfigurationSettings {
+        /**
+         * Server port. By default a free port is picked by the system.
+         */
+        port: string | number;
         param1: string;
     }
     interface Tag {

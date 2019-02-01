@@ -2,18 +2,18 @@ import validate from './schema/conf.schema';
 import {getValidationErrors} from './schema/validate';
 import TMDError from './error';
 import {TMD} from '../types';
-
+import l from './logger';
 
 let defaultSettings = {
+    "port" : 0,
     "param1" : "value1"
 };
+
 
 let instance:TMD.ConfigurationSettings = null;
 
 const mergeSettings = (settings:any, def:TMD.ConfigurationSettings): TMD.ConfigurationSettings => {
-    return {
-        "param1" : settings.param1 || def.param1
-    };
+    return Object.assign(defaultSettings,settings);
 }
 
 const initConf =  (settings?:object ):TMD.ConfigurationSettings => {
@@ -34,6 +34,7 @@ const initConf =  (settings?:object ):TMD.ConfigurationSettings => {
     }
 
     instance = Object.freeze(instance) as TMD.ConfigurationSettings ;
+    l.debug('configuration',instance);
     return instance;
 };
 
