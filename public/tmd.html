@@ -24,10 +24,17 @@
     <h3>Search</h3>
 
     <input type="text" id="tags" name="tags" value="TAG-A, TAG-B"> <button id="btn-search-doc">search</button>
-    <table id="result-set">
+    <table id="result-set" style="width:100%">
 
     </table>
     <hr />
+    <section>
+        <h3>All documents</h3>
+        <button id="show-all-document">show all document</button>
+        <table id="all-documents" style="width:100%">
+
+        </table>
+    </section>
     <script>
         console.log('ready');
         let refTagList = [];
@@ -63,9 +70,9 @@
                     .map(tagName => {
                         const rTag = refTagList.find(refTag => refTag.name === tagName);
                         if (rTag) {
-                            return rTag;
+                            return rTag;    // existing tag
                         } else {
-                            return { "name": tagName };
+                            return { "name": tagName }; // new tag
                         }
                     });
                 console.log('inputTags = ', inputTags);
@@ -95,7 +102,7 @@
 
         const renderTags = (tags) => tags.map( (t) => `[${t.name}]`);
 
-        const renderDocumentResultSet = (docs) => {
+        const renderDocumentResultSet = (docs, containerId) => {
             console.log(docs);
             const html = docs.map(doc => `<tr id="${doc.id}">
                 <td>${doc.id}</td>
@@ -103,13 +110,15 @@
                 <td>${doc.content.originalName}</td>
                 <td>${renderTags(doc.tags)}</td>
             </tr>`);
-            document.getElementById('result-set').innerHTML = html;
+            document.getElementById(containerId).innerHTML = html;
         };
 
         const initDocumentSearch = () => {
             document.getElementById('btn-search-doc').addEventListener('click', (ev) => {
                 // get user input (tags)
-                let tagIds = document.getElementById('tags').value.split(',')
+                let tagUserInput = document.getElementById('tags').value.trim();
+
+                let tagIds = tagUserInput.split(',')
                     .map(tag => tag.trim())
                     .filter(tag => tag.length)
                     .map(tag => refTagList.find(refTag => refTag.name === tag))
@@ -117,6 +126,11 @@
                     .map(tag => tag.id);
 
                 console.log(tagIds);
+
+                if( tagUserInput.length !== 0 && tagIds.length === 0) {
+                    alert('unknown tag');
+                    return;
+                }
                 var url = new URL('http://localhost:3000/api/v1/documents');
                 url.search = new URLSearchParams({
                     "tags": tagIds.join(',')
@@ -124,10 +138,21 @@
                 
                 fetch(url)
                     .then(resp => resp.json())
-                    .then(renderDocumentResultSet);
+                    .then( docs => {
+                        renderDocumentResultSet(docs,'result-set');
+                    });
             });
         };
         
+        const initShowAllDocument = () => {
+            document.getElementById('show-all-document').addEventListener('click', (ev) => {
+                fetch('/api/v1/documents')
+                    .then(resp => resp.json())
+                    .then( docs => {
+                        renderDocumentResultSet(docs, 'all-documents');
+                    });
+            });
+        };
         // Entry Point
         document.addEventListener("DOMContentLoaded", function (event) {
             console.log("DOM fully loaded and parsed");
@@ -137,6 +162,7 @@
                     refTagList = result;
                     initDocumentCreation();
                     initDocumentSearch();
+                    initShowAllDocument();
                 });
         }); 
     </script>
