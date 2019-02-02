@@ -4,6 +4,7 @@ import { TMD } from '../../types';
 import Repository from '../../common/content/repository';
 import TagStore from '../../common/stores/tag.store';
 import TMDError from '../../common/error';
+import {arrayContainsArray} from '../../common/helpers';
 
 console.log(`loading ${__filename}`);
 
@@ -28,6 +29,27 @@ export class DocumentsService {
   all(query?:any): Promise<TMD.Document[]> {
     L.info(`fetch all documents. query = ${query}`);
     return DocumentStore.all(query)
+      .then( docs => Promise.all( docs.map( this.expandTagId )));
+  }
+
+  byTags(tagIds:string[]) : Promise<TMD.Document[]> {
+    L.info(`fetch document with tags ${tagIds}`);
+    let query:object = null;
+    if(tagIds.length !== 0) {
+      query = { "tags" : { "$in" : tagIds}};
+    } else {
+      query = { "tags" : { "$size" : 0 }};
+    }
+
+    return DocumentStore.all(query)
+      .then( docs => {
+        if( tagIds.length < 2) {
+          return docs;
+        }
+
+        // check that doc.tags contains tagsIds
+        return docs.filter( doc => arrayContainsArray(doc.tags, tagIds));
+      })
       .then( docs => Promise.all( docs.map( this.expandTagId )));
   }
 

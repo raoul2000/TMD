@@ -38,11 +38,14 @@ export class Controller {
         tagIds = req.query.tags as Array<string>;
       }
       L.debug('tags query', tagIds);
+      /*
       if(tagIds.length !== 0) {
         q = { "tags" : { "$in" : tagIds}};
       } else {
         q = { "tags" : { "$size" : 0 }};
-      }
+      }*/
+      DocumentsService.byTags(tagIds).then(r => res.json(r));
+      return;     
     }
 
     // parse the query param into an object
