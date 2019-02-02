@@ -24,9 +24,9 @@
     <h3>Search</h3>
 
     <input type="text" id="tags" name="tags" value="TAG-A, TAG-B"> <button id="btn-search-doc">search</button>
-    <div id="result-set">
+    <table id="result-set">
 
-    </div>
+    </table>
     <hr />
     <script>
         console.log('ready');
@@ -93,9 +93,16 @@
             });
         };
 
+        const renderTags = (tags) => tags.map( (t) => `[${t.name}]`);
+
         const renderDocumentResultSet = (docs) => {
             console.log(docs);
-            const html = docs.map(doc => `<div id="${doc.id}">${doc.name}</div>`);
+            const html = docs.map(doc => `<tr id="${doc.id}">
+                <td>${doc.id}</td>
+                <td>${doc.name}</td>
+                <td>${doc.content.originalName}</td>
+                <td>${renderTags(doc.tags)}</td>
+            </tr>`);
             document.getElementById('result-set').innerHTML = html;
         };
 
@@ -111,10 +118,10 @@
 
                 console.log(tagIds);
                 var url = new URL('http://localhost:3000/api/v1/documents');
-                /*
                 url.search = new URLSearchParams({
                     "tags": tagIds.join(',')
-                });*/
+                });
+                
                 fetch(url)
                     .then(resp => resp.json())
                     .then(renderDocumentResultSet);
