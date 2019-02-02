@@ -19,24 +19,35 @@ export class Controller {
   all(req: Request, res: Response): void {
     let q:any = null,
       validQuery:boolean = true,
-      tagIds = [];
+      tagIds:string[] = [];
 
     // processing the TAGS query selector
-    if( req.query.tags) {
+    // Allowed formats :
+    //
+    // ...&tags=id1,id3,id4
+    // ...&tags=id1&tags=id3&tags=id4
+    //    All document with at least the given tags
+    //
+    // ...&tags= 
+    //    All document with no tag
+    if( req.query.hasOwnProperty('tags') )  {
       if( typeof req.query.tags === 'string'){
-        let str = req.query.tags as string;
+        let str:string = req.query.tags as string;
         tagIds = str.split(',').map( tag => tag.trim()).filter( tag => tag.length != 0);
       } else if( Array.isArray(req.query.tags)) {
         tagIds = req.query.tags as Array<string>;
       }
+      L.debug('tags query', tagIds);
       if(tagIds.length !== 0) {
         q = { "tags" : { "$in" : tagIds}};
+      } else {
+        q = { "tags" : { "$size" : 0 }};
       }
     }
 
     // parse the query param into an object
     // NOTE : if the TAGS query selector is set, ignore the QUERY param
-    if ( q === null && req.query.query) {
+    if ( q === null && req.query.hasOwnProperty('query')) {
       try {
         q = JSON.parse(req.query.query);
       } catch (error) {
@@ -48,7 +59,7 @@ export class Controller {
     }
 
     if(validQuery) {
-      L.debug('query = ',q);
+      L.debug('query = ',JSON.stringify(q));
       DocumentsService.all(q).then(r => res.json(r));
     }
   }
