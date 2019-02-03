@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-const renderTags = (tags) => tags.map( (t) => `[${t.name}]`);
+const renderTags = (tags) => tags.map( (t) => `<span class="label label-primary">${t.name}</span> `);
 
 const renderDocumentResultSet = (docs, containerId) => {
     console.log(docs);
@@ -17,6 +17,8 @@ const renderDocumentResultSet = (docs, containerId) => {
 const initSearch = () => {
 
     const inputElement = document.getElementById('tags-search');
+    const buttonSearch = document.getElementById('btn-search-by-tags');
+
     const tagify = new Tagify(
         inputElement,
         {
@@ -40,13 +42,19 @@ const initSearch = () => {
         }
     );
 
-    tagify.on('click', function (e) {
-        console.log(e.detail);
+    // enable search button when tag selected
+    tagify.on('add', (e) => {
+        buttonSearch.disabled = false;
     });
 
-    document.getElementById('btn-search-by-tags').addEventListener('click', (ev) => {
+    // update search button state : disable when no tag selected
+    tagify.on('remove', (e) => {
+        buttonSearch.disabled = JSON.parse(inputElement.value).length === 0;
+    });
+
+    // user clicks on search button
+    buttonSearch.addEventListener('click', (ev) => {
         try {
-            // @ts-ignore
             const queryTagIds = JSON.parse(inputElement.value)
                 .map(tag => tag.id)
                 .join(',');
@@ -62,8 +70,6 @@ const initSearch = () => {
                     console.log(docs);
                     renderDocumentResultSet(docs,'result-set');
                 });
-
-
         } catch (error) {
             console.error(error);
         }
