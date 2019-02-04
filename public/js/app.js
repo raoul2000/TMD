@@ -96,6 +96,15 @@ const initSearch_tagify = (tagList) => {
     });
 };
 
+const updateSelectOptions = (tagList, elementId) => {
+    try {
+        const selectize = document.getElementById(elementId).selectize;
+        selectize.clear();
+        selectize.addOption(tagList);
+    } catch (error) {
+        console.error(error);
+    }
+};
 
 const initSearch = (tagList) => {
     const inputElement = document.getElementById('tags-search');
@@ -110,17 +119,11 @@ const initSearch = (tagList) => {
         "labelField": 'name',
         "searchField": 'name',
         "openOnFocus": false,
-        "options" : tagList,
         "onChange" :  (value) =>  buttonSearch.disabled = $inputTags[0].selectize.items.length === 0,
         "onItemAdd" : (value, $item) =>  $inputTags[0].selectize.close()
     });
     const tagSelectize = $inputTags[0].selectize;
-/*
-    $inputTags[0].selectize.load( (cb) => {
-        console.log("load");
-        cb(tagList);
-    });
-    */
+    updateSelectOptions(tagList,'tags-search');
 
     // user clicks on search button
     buttonSearch.addEventListener('click', (ev) => {
@@ -143,12 +146,58 @@ const initSearch = (tagList) => {
         }
     });   
 };
+const initimportDocument = (tagList) => {
+    const inputElement = document.getElementById('tags-import');
+    const btnImportDoc = document.getElementById('btn-import-doc');
+
+    // because tagify only accepts property 'value' and not 'name'
+    const tagsIfied = tagList.map(tag => ({ "value": tag.name, "id": tag.id }));
+
+    const $inputTags = $('#tags-import').selectize({
+        "create": true,
+        "valueField": 'id',
+        "labelField": 'name',
+        "searchField": 'name',
+        "openOnFocus": false,
+        "onChange" :  (value) =>  btnImportDoc.disabled = $inputTags[0].selectize.items.length === 0,
+        "onItemAdd" : (value, $item) =>  {
+            console.log(value);
+            $inputTags[0].selectize.close();
+        },
+        //"persist" : false,
+        "create": function(input) {
+            console.log('creating');
+            return {
+                "id": `nullid:${input}`,
+                "name": input
+            }
+        }
+    });
+    const tagSelectize = $inputTags[0].selectize;
+    updateSelectOptions(tagList,'tags-import');
+
+    // user clicks on search button
+    btnImportDoc.addEventListener('click', (ev) => {
+        try {
+            const importTagIds = inputElement.value.split(',');
+
+            console.log(importTagIds)
+
+
+        } catch (error) {
+            console.error(error);
+        }
+    });   
+};
 
 const loadTags = () => fetch("/api/v1/tags").then(resp => resp.json()).catch(err => console.error('failed to load tags', err));
 
 const start = () => {
     console.log('starting ...');
+    let tagList = [];
 
     loadTags()
-        .then(initSearch);
+        .then( (result) => tagList = result)
+        .then( () => initSearch(tagList) )
+        .then( () => initimportDocument(tagList) );
 };
