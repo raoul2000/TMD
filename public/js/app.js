@@ -1,9 +1,11 @@
 // @ts-nocheck
 const NEW_TAG_PREFIX = 'tmd_tagId:';
 
-const renderTags = (tags) => tags.map((t) => `<span class="label label-primary">${t.name}</span> `);
+const renderTags = (tags) => tags.map((t) => `<span class="label label-primary">${t.name}</span>`).join(' ');
 
-const loadTags = () => fetch("/api/v1/tags").then(resp => resp.json()).catch(err => console.error('failed to load tags', err));
+const loadTags = () => fetch("/api/v1/tags")
+    .then(resp => resp.json())
+    .catch(err => console.error('failed to load tags', err));
 
 const renderDocumentResultSet = (docs, containerId) => {
     console.log(docs);
@@ -115,6 +117,7 @@ const refreshTagList = () => {
         .then(tagList => {
             updateSelectOptions(tagList, 'tags-import');
             updateSelectOptions(tagList, 'tags-search');
+            initManageTags(tagList);
         });
 };
 
@@ -262,16 +265,17 @@ const initImportDocument = (tagList = []) => {
     });
 };
 
+const initManageTags = (tagList = []) => {
+    const taglistElement = document.getElementById('tag-list');
+    taglistElement.innerHTML = renderTags(tagList);
+};
+
 const start = () => {
     console.log('starting ...');
-    let tagList = [];
-/*
     loadTags()
-        .then((result) => tagList = result)
-        .then(() => initSearch(tagList))
-        .then(() => initImportDocument(tagList));
-        */
-    initSearch();
-    initImportDocument();
-    refreshTagList();
+        .then( (tagList) => {
+            initSearch(tagList);
+            initImportDocument(tagList);
+            initManageTags(tagList);
+        });
 };
