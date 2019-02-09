@@ -185,7 +185,11 @@ const createTagsToSubmit = (tagsInput) => {
         "tags" : tags 
     }
 };
-
+/**
+ * init the import document vies
+ * 
+ * @param {array} tagList list of all tags
+ */
 const initImportDocument = (tagList = []) => {
     const inputElement = document.getElementById('tags-import');
     const inputNameElement = document.getElementById('input-name');
@@ -264,7 +268,11 @@ const initImportDocument = (tagList = []) => {
         }
     });
 };
-
+/**
+ * init the view all tags section
+ * 
+ * @param {array} tagList list of all tags
+ */
 const initManageTags = (tagList = []) => {
     const taglistElement = document.getElementById('tag-list');
     taglistElement.innerHTML = renderTags(tagList);
