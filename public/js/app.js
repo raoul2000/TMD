@@ -14,7 +14,7 @@ const renderDocumentResultSet = (docs, containerId) => {
         <td>${doc.content.originalName}</td>
         <td>${renderTags(doc.tags)}</td>
     </tr>`);
-    document.getElementById(containerId).innerHTML = html;
+    document.getElementById(containerId).innerHTML = html.join(' ');
 };
 
 const updateSelectOptions = (tagList, elementId) => {
@@ -97,8 +97,8 @@ const createTagsToSubmit = (tagsInput) => {
         };
     })
     return {
-        "hasNewTag" : hasNewTag,
-        "tags" : tags 
+        "hasNewTag": hasNewTag,
+        "tags": tags
     }
 };
 /**
@@ -153,8 +153,8 @@ const initImportDocument = (tagList = []) => {
             formData.append('content', file);
 
             // Form tags ///////////////////////////////////////////////////////////
-            
-            const {hasNewTag, tags: importTagIds} = createTagsToSubmit(inputElement.value);
+
+            const { hasNewTag, tags: importTagIds } = createTagsToSubmit(inputElement.value);
             formData.append('tags', JSON.stringify(importTagIds));
 
             // SUbmit 
@@ -164,9 +164,9 @@ const initImportDocument = (tagList = []) => {
                 body: formData
             }).then(response => {
                 console.log(response);
-                document.getElementById('add-document').querySelector('form').reset();   
-                tagSelectize.clear();             
-                if(hasNewTag) {
+                document.getElementById('add-document').querySelector('form').reset();
+                tagSelectize.clear();
+                if (hasNewTag) {
                     refreshTagList();
                 }
             }).catch(error => {
@@ -191,8 +191,9 @@ const initManageTags = (tagList = []) => {
 
 const start = () => {
     console.log('starting ...');
+    
     loadTags()
-        .then( (tagList) => {
+        .then((tagList) => {
             initSearch(tagList);
             initImportDocument(tagList);
             initManageTags(tagList);
