@@ -9,9 +9,12 @@ const loadTags = () => fetch("/api/v1/tags")
 
 const renderDocumentResultSet = (docs, containerId) => {
     console.log(docs);
-    const html = docs.map(doc => `<tr id="${doc.id}">
+    const html = docs.map(doc => `<tr>
         <td>${doc.id}</td>
-        <td>${doc.content.originalName}</td>
+        <td>
+            <a href="#" data-action="preview-doc" data-doc-id="${doc.id}">${doc.content.originalName}</a>
+            <small><a href="/api/v1/documents/${doc.id}/content?download=true">(download)</a></small>
+        </td>
         <td>${renderTags(doc.tags)}</td>
     </tr>`);
     document.getElementById(containerId).innerHTML = html.join(' ');
@@ -35,6 +38,10 @@ const refreshTagList = () => {
             updateSelectOptions(tagList, 'tags-search');
             initManageTags(tagList);
         });
+};
+
+const previewDoc = (docId) => {
+    document.getElementById('iframe').src = `/api/v1/documents/${docId}/content`;
 };
 
 const initSearch = (tagList = []) => {
@@ -75,6 +82,20 @@ const initSearch = (tagList = []) => {
         } catch (error) {
             console.error(error);
         }
+    });
+
+    // Handle user click on one item in the result set
+    document.getElementById('result-set').addEventListener('click', (ev) => {
+        const { action } = ev.target.dataset;        
+        switch (action) {
+            case "preview-doc":
+                ev.preventDefault();
+                previewDoc(ev.target.dataset.docId);
+                break;
+            default:
+                console.warn(`unsupported action : ${action}`);
+        }
+        //debugger;
     });
 };
 /**
@@ -191,7 +212,7 @@ const initManageTags = (tagList = []) => {
 
 const start = () => {
     console.log('starting ...');
-    
+
     loadTags()
         .then((tagList) => {
             initSearch(tagList);

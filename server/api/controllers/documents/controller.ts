@@ -2,10 +2,9 @@ import L from '../../../common/logger';
 import DocumentsService from '../../services/documents.service';
 import { Request, Response, NextFunction } from 'express';
 import httpStatus from 'http-status';
-import fse from 'fs-extra';
 import fs from 'fs';
 import TMDError from '../../../common/error';
-import { tags } from 'joi';
+import path from 'path';
 
 console.log(`loading ${__filename}`);
 
@@ -88,7 +87,18 @@ export class Controller {
   content(req: Request, res: Response): void {
     DocumentsService.byId(req.params.id).then(r => {
       if (r) {
-        res.download(r.content.path, r.content.originalName);
+        if( req.query.download) {
+          res.download(r.content.path, r.content.originalName);
+        } else {
+          // TODO: change this hard coded path !!
+          const absolutFilePath = path.join('D:\\dev\\TMD', r.content.path);
+          L.debug(`sending file ${absolutFilePath}`);
+          res.sendFile(absolutFilePath, {
+            "headers" : {
+              "Content-Type" : r.content.mimeType
+            }
+          });
+        }
       }
       else res.status(httpStatus.NOT_FOUND).end();
     });
