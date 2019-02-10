@@ -164,6 +164,8 @@ const initImportDocument = (tagList = []) => {
                 body: formData
             }).then(response => {
                 console.log(response);
+                document.getElementById('add-document').querySelector('form').reset();   
+                tagSelectize.clear();             
                 if(hasNewTag) {
                     refreshTagList();
                 }
