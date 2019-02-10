@@ -90,19 +90,10 @@ export class DocumentsService {
 
   /**
    * 
-   * @param name string 
    * @param file 
    */
-  create(name: string, tags: TMD.Tag[], file: Express.Multer.File): Promise<TMD.Document[] | TMD.Document> {
-    L.info(`create document with name ${name}`);
+  create(tags: TMD.Tag[], file: Express.Multer.File): Promise<TMD.Document[] | TMD.Document> {
 
-    if (!name) {
-      return Promise.reject("missing parameter 'name'");
-    }
-    name = name.trim();
-    if (name.length === 0) {
-      return Promise.reject("invalid parameter 'name'");
-    }
     // we should validate tags schema
 
     // get from the tag list, all tags that are not already stored
@@ -121,7 +112,6 @@ export class DocumentsService {
       })
       .then(() => Repository.write(file))
       .then(contentMetadata => DocumentStore.insert({
-        "name": name,
         "tags": documentTagIds,
         "content": contentMetadata
       }))

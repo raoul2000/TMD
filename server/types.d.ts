@@ -20,7 +20,6 @@ export declare namespace TMD {
     }
     interface Document {
         id?: string;
-        name: string;
         /**
          * List of tag Ids
          */

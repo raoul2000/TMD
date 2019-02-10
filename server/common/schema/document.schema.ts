@@ -2,7 +2,7 @@ import joi from 'joi';
 import validate from './validate';
 
 const schema = joi.object().keys({
-    'name': joi.string().required()
+    'tags' : joi.array().items(joi.string())
 });
 // TODO: document validation include validating all tags assigned to this document
 
