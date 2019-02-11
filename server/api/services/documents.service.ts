@@ -117,6 +117,17 @@ export class DocumentsService {
       }))
       .then( this.expandTagId );
   }
+
+  getContent(docId:string): Promise<any> {
+    return this.byId(docId)
+      .then( doc => {
+        return {
+          "absolutePath": "",
+          "originalName": doc.content.originalName,
+           "contentType": doc.content.mimeType
+        }
+      });
+  }
 }
 
 export default new DocumentsService();

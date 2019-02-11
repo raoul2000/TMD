@@ -6,6 +6,10 @@ export declare namespace TMD {
          */
         port: string | number;
         param1: string;
+        /**
+         * Base folder path where file contents are stored
+         */
+        basePath:string;
     }
     interface Tag {
         id?: string;
@@ -13,7 +17,14 @@ export declare namespace TMD {
     }
 
     interface DocumentContent {
+        /**
+         * File content path relative to the basePath defined by the repository
+         * that owns the document
+         */
         path: string;
+        /**
+         * Filename provided at import
+         */
         originalName: string;
         mimeType: string;
         size: number;

@@ -16,9 +16,9 @@ export class Controller {
    * @param res response
    */
   all(req: Request, res: Response): void {
-    let q:any = null,
-      validQuery:boolean = true,
-      tagIds:string[] = [];
+    let q: any = null,
+      validQuery: boolean = true,
+      tagIds: string[] = [];
 
     // processing the TAGS query selector
     // Allowed formats :
@@ -29,11 +29,11 @@ export class Controller {
     //
     // ...&tags= 
     //    All document with no tag
-    if( req.query.hasOwnProperty('tags') )  {
-      if( typeof req.query.tags === 'string'){
-        let str:string = req.query.tags as string;
-        tagIds = str.split(',').map( tag => tag.trim()).filter( tag => tag.length != 0);
-      } else if( Array.isArray(req.query.tags)) {
+    if (req.query.hasOwnProperty('tags')) {
+      if (typeof req.query.tags === 'string') {
+        let str: string = req.query.tags as string;
+        tagIds = str.split(',').map(tag => tag.trim()).filter(tag => tag.length != 0);
+      } else if (Array.isArray(req.query.tags)) {
         tagIds = req.query.tags as Array<string>;
       }
       L.debug('tags query', tagIds);
@@ -44,24 +44,24 @@ export class Controller {
         q = { "tags" : { "$size" : 0 }};
       }*/
       DocumentsService.byTags(tagIds).then(r => res.json(r));
-      return;     
+      return;
     }
 
     // parse the query param into an object
     // NOTE : if the TAGS query selector is set, ignore the QUERY param
-    if ( q === null && req.query.hasOwnProperty('query')) {
+    if (q === null && req.query.hasOwnProperty('query')) {
       try {
         q = JSON.parse(req.query.query);
       } catch (error) {
         validQuery = false;
         res
           .status(httpStatus.INTERNAL_SERVER_ERROR)
-          .json(new TMDError("query is not a valid JSON object",error));
+          .json(new TMDError("query is not a valid JSON object", error));
       }
     }
 
-    if(validQuery) {
-      L.debug('query = ',JSON.stringify(q));
+    if (validQuery) {
+      L.debug('query = ', JSON.stringify(q));
       DocumentsService.all(q).then(r => res.json(r));
     }
   }
@@ -85,23 +85,43 @@ export class Controller {
   }
 
   content(req: Request, res: Response): void {
+    DocumentsService.getContent(req.params.id)
+      .then( content => {
+        const { absolutePath, originalName, contentType } = content;
+        if (req.query.download) {
+          res.download(absolutePath, originalName);
+        } else {
+          res.sendFile(absolutePath, {
+            "headers": {
+              "Content-Type": contentType
+            }
+          });
+        }
+      })
+      .catch(err => {
+        res
+          .status(httpStatus.INTERNAL_SERVER_ERROR)
+          .json(err);
+      });
+/*
     DocumentsService.byId(req.params.id).then(r => {
       if (r) {
-        if( req.query.download) {
+        if (req.query.download) {
           res.download(r.content.path, r.content.originalName);
         } else {
           // TODO: change this hard coded path !!
           const absolutFilePath = path.join('D:\\dev\\TMD', r.content.path);
           L.debug(`sending file ${absolutFilePath}`);
           res.sendFile(absolutFilePath, {
-            "headers" : {
-              "Content-Type" : r.content.mimeType
+            "headers": {
+              "Content-Type": r.content.mimeType
             }
           });
         }
       }
       else res.status(httpStatus.NOT_FOUND).end();
     });
+*/    
   }
 
   deleteById(req: Request, res: Response): void {
@@ -124,7 +144,7 @@ export class Controller {
       res
         .status(httpStatus.INTERNAL_SERVER_ERROR)
         .json(err);
-    });;
+    });
   }
 
   create(req: Request, res: Response, next: NextFunction): void {

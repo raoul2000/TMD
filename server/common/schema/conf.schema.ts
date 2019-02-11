@@ -3,7 +3,8 @@ import validate from './validate';
 
 const schema = joi.object().keys({
     "port" : joi.number(),
-    'param1': joi.string().required()
+    'param1': joi.string().required(),
+    'basePath': joi.string().required()
 });
 
 export default (o) => validate(schema, o);
