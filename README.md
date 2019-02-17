@@ -112,3 +112,9 @@ Add these [contents](https://github.com/cdimascio/generator-express-no-stress/bl
 - [OAS 2.0](https://swagger.io/specification/v2/)
   - [File Upload](https://swagger.io/docs/specification/2-0/file-upload/)
 - [swagger-express-middleware](https://www.npmjs.com/package/swagger-express-middleware/v/2.0.0)
+
+# To Check
+- upload widget
+  - https://github.com/transloadit/uppy
+  - https://fineuploader.com/demos.html
+  - https://github.com/pqina/filepond
