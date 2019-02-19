@@ -30,19 +30,16 @@ export class Controller {
     // ...&tags= 
     //    All document with no tag
     if (req.query.hasOwnProperty('tags')) {
-      if (typeof req.query.tags === 'string') {
+      if (typeof req.query.tags === 'string') 
+      {
         let str: string = req.query.tags as string;
-        tagIds = str.split(',').map(tag => tag.trim()).filter(tag => tag.length != 0);
-      } else if (Array.isArray(req.query.tags)) {
+        tagIds = str.split(',').map(tag => tag.trim()).filter(tag => tag.length);
+      } 
+      else if (Array.isArray(req.query.tags)) 
+      {
         tagIds = req.query.tags as Array<string>;
       }
       L.debug('tags query', tagIds);
-      /*
-      if(tagIds.length !== 0) {
-        q = { "tags" : { "$in" : tagIds}};
-      } else {
-        q = { "tags" : { "$size" : 0 }};
-      }*/
       DocumentsService.byTags(tagIds).then(r => res.json(r));
       return;
     }
@@ -87,6 +84,7 @@ export class Controller {
   content(req: Request, res: Response): void {
     DocumentsService.getContent(req.params.id)
       .then( content => {
+        L.debug("document content descriptor",content);
         const { absolutePath, originalName, contentType } = content;
         if (req.query.download) {
           res.download(absolutePath, originalName);
@@ -102,26 +100,7 @@ export class Controller {
         res
           .status(httpStatus.INTERNAL_SERVER_ERROR)
           .json(err);
-      });
-/*
-    DocumentsService.byId(req.params.id).then(r => {
-      if (r) {
-        if (req.query.download) {
-          res.download(r.content.path, r.content.originalName);
-        } else {
-          // TODO: change this hard coded path !!
-          const absolutFilePath = path.join('D:\\dev\\TMD', r.content.path);
-          L.debug(`sending file ${absolutFilePath}`);
-          res.sendFile(absolutFilePath, {
-            "headers": {
-              "Content-Type": r.content.mimeType
-            }
-          });
-        }
-      }
-      else res.status(httpStatus.NOT_FOUND).end();
-    });
-*/    
+      }); 
   }
 
   deleteById(req: Request, res: Response): void {

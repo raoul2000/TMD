@@ -122,7 +122,7 @@ export class DocumentsService {
     return this.byId(docId)
       .then( doc => {
         return {
-          "absolutePath": "",
+          "absolutePath": Repository.getAbsolutePath(doc.content.path),
           "originalName": doc.content.originalName,
            "contentType": doc.content.mimeType
         }

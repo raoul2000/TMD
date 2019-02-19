@@ -1,14 +1,12 @@
 import { TMD } from '../../types';
 import path from 'path';
 import fse from 'fs-extra';
-import conf from '../conf';
 import L from '../logger';
-
 
 
 export class Repository implements TMD.RepositoryInterface {
     private basePath:string = "";
-    constructor(basePath:string) {
+    constructor(basePath:string = process.env['CONTENT_ROOT_PATH']) {
         if( ! path.isAbsolute(basePath)) {            
             this.basePath = path.resolve(basePath);
         } else {
@@ -22,12 +20,12 @@ export class Repository implements TMD.RepositoryInterface {
     }
     
     write(file: Express.Multer.File): Promise<TMD.ContentMetadata> {
-        const srcFilePath = file.path;
         const destFilePath = path.join(process.env['CONTENT_ROOT_PATH'], file.filename);
 
-        return fse.move(srcFilePath, destFilePath)
+        // currently all content files are saved under the CONTENT folder (no subfolder)
+        return fse.move(file.path, destFilePath)
             .then(() => ({
-                "path" : destFilePath,
+                "path" : file.filename,
                 "originalName" : file.originalname,
                 "mimeType" : file.mimetype,
                 "size" : file.size
@@ -35,4 +33,4 @@ export class Repository implements TMD.RepositoryInterface {
     }
 }
 
-export default new Repository(conf.read().basePath);
+export default new Repository();
