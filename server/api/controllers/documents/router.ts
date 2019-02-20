@@ -13,7 +13,7 @@ const upload = multer({dest: uploadFolder });
 
 export default express.Router()
     // create a Document
-    .post('/', upload.single('content') , controller.create)
+    .post('/', upload.array('content') , controller.create)
 
     // get all documents
     .get('/', controller.all)

@@ -126,6 +126,13 @@ export class Controller {
     });
   }
 
+  /**
+   * CReate a new document.
+   * 
+   * @param req the client request
+   * @param res service response
+   * @param next next middleware
+   */
   create(req: Request, res: Response, next: NextFunction): void {
     //console.log(req.file);
     //console.log(req.body);
@@ -136,6 +143,19 @@ export class Controller {
         .json(new TMDError("missing parameter 'tags"));
       return;
     }
+    // TODO: rewrite this function to accept an array of files
+    /**
+       [{
+          destination: "tmp/upload"
+          encoding: "7bit"
+          fieldname: "content"
+          filename: "e92191c0c3f65811605e72522515f9d3"
+          mimetype: "image/jpeg"
+          originalname: "140.jpg"
+          path: "tmp\upload\e92191c0c3f65811605e72522515f9d3"
+          size: 8053
+      }, ...]
+     */
 
     const tags = JSON.parse(req.body.tags);
 
