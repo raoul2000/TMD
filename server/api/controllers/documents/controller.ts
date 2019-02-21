@@ -5,6 +5,7 @@ import httpStatus from 'http-status';
 import fs from 'fs';
 import TMDError from '../../../common/error';
 import path from 'path';
+import ExpressServer from '../../../common/server';
 
 console.log(`loading ${__filename}`);
 
@@ -192,6 +193,83 @@ export class Controller {
         (error) => deleteUploadFile().then(() => sendErrorResponse(error))
       );
   }
+
+
+  createMulti(req: Request, res: Response, next: NextFunction): void {
+    //console.log(req.file);
+    //console.log(req.body);
+
+    
+    // build tag Id list
+    if (!req.body.tags) {
+      res.status(httpStatus.INTERNAL_SERVER_ERROR)
+      .json(new TMDError("missing parameter 'tags"));
+      return;
+    }
+    const tags = JSON.parse(req.body.tags);
+
+    // process file argument
+    const files = req.file ? [req.file] : req.files;
+    
+
+    // TODO: rewrite this function to accept an array of files
+    /**
+       [{
+          destination: "tmp/upload"
+          encoding: "7bit"
+          fieldname: "content"
+          filename: "e92191c0c3f65811605e72522515f9d3"
+          mimetype: "image/jpeg"
+          originalname: "140.jpg"
+          path: "tmp\upload\e92191c0c3f65811605e72522515f9d3"
+          size: 8053
+      }, ...]
+     */
+
+    
+
+    // Promisify fs.unlink
+    const unlink = (path) => new Promise((resolve, reject) => {
+      fs.unlink(path, (err) => {
+        if (err) reject(err);
+        else resolve();
+      });
+    });
+
+    // delete uploaded file from local FS
+    const deleteUploadFile = () => unlink(req.file.path)
+      .catch(err => {
+        L.error(`failed to delete uploaded file : ${req.file.path}`);
+        return Promise.resolve(); // always resolved
+      });
+
+    // send success Response
+    const sendSuccessResponse = (newDoc) => res
+      .status(httpStatus.CREATED)
+      .json(newDoc);
+
+    // send error Response
+    const sendErrorResponse = (err) => res
+      .status(httpStatus.INTERNAL_SERVER_ERROR)
+      .json(err);
+
+    files.map( file => DocumentsService
+      .create(tags,file)
+      .then( (newDoc => sendSuccessResponse(newDoc) )
+      .then( deleteUploadFile )
+      .catch( sendErrorResponse )
+    );
+
+    // create the document
+    DocumentsService
+      .create(tags, req.file)
+      .then(
+        (insertedDoc) => deleteUploadFile().then(() => sendSuccessResponse(insertedDoc)),
+        (error) => deleteUploadFile().then(() => sendErrorResponse(error))
+      );
+  }
+
+
 }
 
 export default new Controller();
