@@ -34,7 +34,7 @@ export declare namespace TMD {
         /**
          * List of tag Ids
          */
-        tags: string[];
+        tags: string[] | Tag[];
         note?:string;
         content: DocumentContent
     }

@@ -31,7 +31,7 @@ export class TagStore {
         return this.store.find({}).then( checkout );
     }
 
-    byId(id: string | string[]): Promise<TMD.Tag> {
+    byId(id: string | string[]): Promise<TMD.Tag | TMD.Tag[]> {
         L.info(`fetch tag with id ${id}`);
 
         const find = Array.isArray(id)

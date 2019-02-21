@@ -40,8 +40,8 @@ export class DocumentStore {
         return this.store.remove({}, { multi: true });        
     }
 
-    insert(documents:TMD.Document[] | TMD.Document):Promise<TMD.Document[]|TMD.Document> {
-        L.info('insert one or more documents');
+    insert(documents:TMD.Document[]):Promise<TMD.Document[]> {
+        L.info('insert one or more documents', documents);
         // TODO: document checkin/checkout implies processing assigned tags ids (and not only document tag)
         const checkedDocuments = checkin(documents);
         // TODO: document validation

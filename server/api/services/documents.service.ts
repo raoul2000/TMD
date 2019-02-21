@@ -4,7 +4,7 @@ import { TMD } from '../../types';
 import Repository from '../../common/content/repository';
 import TagStore from '../../common/stores/tag.store';
 import TMDError from '../../common/error';
-import {arrayContainsArray} from '../../common/helpers';
+import { arrayContainsArray } from '../../common/helpers';
 
 console.log(`loading ${__filename}`);
 
@@ -18,45 +18,45 @@ export class DocumentsService {
    * @param doc the document object to process
    */
   expandTagId(doc: TMD.Document): Promise<TMD.Document> {
-    if( ! doc ) {
+    if (!doc) {
       return Promise.resolve(doc);
     }
     L.debug('expanding tags');
-    return TagStore.byId(doc.tags)
+    return TagStore.byId(doc.tags as string[])
       .then(tags => Object.assign(doc, { "tags": tags }));
   }
 
-  all(query?:any): Promise<TMD.Document[]> {
+  all(query?: any): Promise<TMD.Document[]> {
     L.info(`fetch all documents. query = ${query}`);
     return DocumentStore.all(query)
-      .then( docs => Promise.all( docs.map( this.expandTagId )));
+      .then(docs => Promise.all(docs.map(this.expandTagId)));
   }
 
-  byTags(tagIds:string[]) : Promise<TMD.Document[]> {
+  byTags(tagIds: string[]): Promise<TMD.Document[]> {
     L.info(`fetch document with tags ${tagIds}`);
-    let query:object = null;
-    if(tagIds.length !== 0) {
-      query = { "tags" : { "$in" : tagIds}};
+    let query: object = null;
+    if (tagIds.length !== 0) {
+      query = { "tags": { "$in": tagIds } };
     } else {
-      query = { "tags" : { "$size" : 0 }};
+      query = { "tags": { "$size": 0 } };
     }
 
     return DocumentStore.all(query)
-      .then( docs => {
-        if( tagIds.length < 2) {
+      .then(docs => {
+        if (tagIds.length < 2) {
           return docs;
         }
 
         // check that doc.tags contains tagsIds
-        return docs.filter( doc => arrayContainsArray(doc.tags, tagIds));
+        return docs.filter(doc => arrayContainsArray(doc.tags, tagIds));
       })
-      .then( docs => Promise.all( docs.map( this.expandTagId )));
+      .then(docs => Promise.all(docs.map(this.expandTagId)));
   }
 
   byId(id: string): Promise<TMD.Document> {
     L.info(`fetch document with id ${id}`);
     return DocumentStore.byId(id)
-      .then( this.expandTagId );
+      .then(this.expandTagId);
   }
 
   deleteById(id: string): Promise<number> {
@@ -79,7 +79,7 @@ export class DocumentsService {
       })
       // updates the tag property of the document given its id
       .then(documentTagIds => DocumentStore.updateTags(id, documentTagIds))
-      .then( this.expandTagId )
+      .then(this.expandTagId)
       .catch((err) => {
         if (err.errorType && err.errorType == "uniqueViolated") {
           return Promise.reject(new TMDError('duplicate tag name', err));
@@ -88,43 +88,79 @@ export class DocumentsService {
       });
   }
 
+
   /**
+   * Insert one or more documents into the database.
+   * There is one Document insertion per file in the `files` array, and all documents have the same 
+   * set of tags assigned.
+   * Existing Tags are provided as object having an `id` property. New tags have a `name`property only.
    * 
-   * @param file 
+   * @param tags list of tags to associate to document(s)
+   * @param files list of files representing the content of document(s)
    */
-  create(tags: TMD.Tag[], file: Express.Multer.File): Promise<TMD.Document[] | TMD.Document> {
+  create(tags: TMD.Tag[], files: Express.Multer.File[]): Promise<TMD.Document[]> {
 
-    // we should validate tags schema
+    // TODO: we should validate tags schema ?
 
-    // get from the tag list, all tags that are not already stored
-    const tagToInsert = tags.filter(tag => !tag.id);
+    /**
+     * create new tags defined in the tag list and returns a liqst of tag ids
+     * @param tags list of tag 
+     */
+    const processTags = (tags: TMD.Tag[]): Promise<string[]> => {
+      // get from the tag list, all tags that are not already stored (i.e. they have no 'id' property)
+      const tagToInsert: TMD.Tag[] = tags.filter(tag => !tag.id);
 
-    // store tags linked assigned to the document
-    let documentTagIds = null;
-    return TagStore.insert(tagToInsert)
-      .catch(err => {
-        return Promise.reject(new TMDError('failed to insert tag', err));
+      if (tagToInsert.length) {
+        // there are tag to insert
+        return TagStore.insert(tagToInsert)
+          .catch(err => {
+            return Promise.reject(new TMDError('failed to insert tag', err));
+          })
+          .then(result => {
+            // for all inserted tags, keep only ids and concat to existing tags ids
+            const documentTagIds: string[] = (result as TMD.Tag[]).concat(tags.filter(tag => tag.id)).map(tag => tag.id);
+            return documentTagIds;
+          });
+      } else {
+        // no tag to insert : return the list of tag ids passed as argument
+        return Promise.resolve(tags.map(tag => tag.id));
+      }
+    };
+
+    let documentTagIds: string[];
+
+    return processTags(tags)
+      .then(results => {
+        documentTagIds = results;
+        // we want to return complete tag objects (not only id) in the list of document
+        // inserted and that we return to caller
+        return TagStore.byId(documentTagIds) as Promise<TMD.Tag[]>
       })
-      .then(result => {
-        let newInsertedTags = !Array.isArray(result) ? [result] : result;
-        documentTagIds = newInsertedTags.concat(tags.filter(tag => tag.id)).map(tag => tag.id);
-        return true;
-      })
-      .then(() => Repository.write(file))
-      .then(contentMetadata => DocumentStore.insert({
-        "tags": documentTagIds,
-        "content": contentMetadata
-      }))
-      .then( this.expandTagId );
+      .then(documentTags => Promise.all(files.map(file => Repository.write(file)))
+        .then(contentMetadataList => {
+
+          // prepare our document for insertion
+          const documents: TMD.Document[] = files.map((file, index) => ({
+            "tags": documentTagIds,   // for insert we only need tag ids
+            "content": contentMetadataList[index]
+          }));
+
+          return DocumentStore.insert(documents)
+            .then( insertedDocuments => insertedDocuments.map(doc => ({
+              "tags": documentTags,   // remember that we want to return complet tag object
+              "content": doc.content
+            })));
+        })
+      )
   }
 
-  getContent(docId:string): Promise<any> {
+  getContent(docId: string): Promise<any> {
     return this.byId(docId)
-      .then( doc => {
+      .then(doc => {
         return {
           "absolutePath": Repository.getAbsolutePath(doc.content.path),
           "originalName": doc.content.originalName,
-           "contentType": doc.content.mimeType
+          "contentType": doc.content.mimeType
         }
       });
   }

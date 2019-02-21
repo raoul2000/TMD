@@ -128,73 +128,12 @@ export class Controller {
 
 
   /**
-   * CReate a new document.
+   * Add a one or more documents into the database.
    * 
    * @param req the client request
    * @param res service response
    * @param next next middleware
    */
-  createSingle(req: Request, res: Response, next: NextFunction): void {
-    //console.log(req.file);
-    //console.log(req.body);
-    debugger;
-    // build tag Id list
-    if (!req.body.tags) {
-      res.status(httpStatus.INTERNAL_SERVER_ERROR)
-        .json(new TMDError("missing parameter 'tags"));
-      return;
-    }
-    // TODO: rewrite this function to accept an array of files
-    /**
-       [{
-          destination: "tmp/upload"
-          encoding: "7bit"
-          fieldname: "content"
-          filename: "e92191c0c3f65811605e72522515f9d3"
-          mimetype: "image/jpeg"
-          originalname: "140.jpg"
-          path: "tmp\upload\e92191c0c3f65811605e72522515f9d3"
-          size: 8053
-      }, ...]
-     */
-
-    const tags = JSON.parse(req.body.tags);
-
-    // Promisify fs.unlink
-    const unlink = (path) => new Promise((resolve, reject) => {
-      fs.unlink(path, (err) => {
-        if (err) reject(err);
-        else resolve();
-      });
-    });
-
-    // delete uploaded file from local FS
-    const deleteUploadFile = () => unlink(req.file.path)
-      .catch(err => {
-        L.error(`failed to delete uploaded file : ${req.file.path}`);
-        return Promise.resolve(); // always resolved
-      });
-
-    // send success Response
-    const sendSuccessResponse = (insertedDoc) => res
-      .status(httpStatus.CREATED)
-      .json(insertedDoc);
-
-    // send error Response
-    const sendErrorResponse = (err) => res
-      .status(httpStatus.INTERNAL_SERVER_ERROR)
-      .json(err);
-
-    // create the document
-    DocumentsService
-      .create(tags, req.file)
-      .then(
-        (insertedDoc) => deleteUploadFile().then(() => sendSuccessResponse(insertedDoc)),
-        (error) => deleteUploadFile().then(() => sendErrorResponse(error))
-      );
-  }
-
-
   create(req: Request, res: Response, next: NextFunction): void {
 
     // build tag Id list
@@ -203,6 +142,7 @@ export class Controller {
         .json(new TMDError("missing parameter 'tags"));
       return;
     }
+
     // prepare tags
     const tags = JSON.parse(req.body.tags);
 
@@ -214,39 +154,20 @@ export class Controller {
       files = req.files;
     }
 
-    /**
-       [{
-          destination: "tmp/upload"
-          encoding: "7bit"
-          fieldname: "content"
-          filename: "e92191c0c3f65811605e72522515f9d3"
-          mimetype: "image/jpeg"
-          originalname: "140.jpg"
-          path: "tmp\upload\e92191c0c3f65811605e72522515f9d3"
-          size: 8053
-      }, ...]
-     */
-
     // delete uploaded file from local FS
-    const deleteUploadedFile = (filePath: string) => new Promise((resolve, reject) => {
-      fs.unlink(filePath, (err) => {
+    const deleteUploadedFile = (file: Express.Multer.File) => new Promise((resolve, reject) => {
+      fs.unlink(file.path, (err) => {
         if (err) {
-          L.warn(`failed to delete uploaded file : ${filePath}`);
+          L.warn(`failed to delete uploaded file : ${file.path}`);
         }
         resolve(true);  // always resolved
       })
     });
 
-    // TODO: Tags must be created first and documents inserted with tag ids
-    //TagsService.create(tags);
-
-    Promise.all(
-      files.map(file => DocumentsService
-        .create(tags, file)
-        .then((newDoc) => deleteUploadedFile(file.path).then(() => newDoc))
+    DocumentsService.create(tags, files)
+      .then(newDocs => Promise.all(files.map(deleteUploadedFile))
+        .then(() => res.status(httpStatus.CREATED).json(newDocs))
       )
-    )
-      .then(newDocs => res.status(httpStatus.CREATED).json(newDocs))
       .catch(err => res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err));
   }
 }
