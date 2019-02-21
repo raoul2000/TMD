@@ -6,6 +6,7 @@ import fs from 'fs';
 import TMDError from '../../../common/error';
 import path from 'path';
 import ExpressServer from '../../../common/server';
+import TagsService from '../../services/tags.service';
 
 console.log(`loading ${__filename}`);
 
@@ -31,13 +32,11 @@ export class Controller {
     // ...&tags= 
     //    All document with no tag
     if (req.query.hasOwnProperty('tags')) {
-      if (typeof req.query.tags === 'string') 
-      {
+      if (typeof req.query.tags === 'string') {
         let str: string = req.query.tags as string;
         tagIds = str.split(',').map(tag => tag.trim()).filter(tag => tag.length);
-      } 
-      else if (Array.isArray(req.query.tags)) 
-      {
+      }
+      else if (Array.isArray(req.query.tags)) {
         tagIds = req.query.tags as Array<string>;
       }
       L.debug('tags query', tagIds);
@@ -84,8 +83,8 @@ export class Controller {
 
   content(req: Request, res: Response): void {
     DocumentsService.getContent(req.params.id)
-      .then( content => {
-        L.debug("document content descriptor",content);
+      .then(content => {
+        L.debug("document content descriptor", content);
         const { absolutePath, originalName, contentType } = content;
         if (req.query.download) {
           res.download(absolutePath, originalName);
@@ -101,7 +100,7 @@ export class Controller {
         res
           .status(httpStatus.INTERNAL_SERVER_ERROR)
           .json(err);
-      }); 
+      });
   }
 
   deleteById(req: Request, res: Response): void {
@@ -127,6 +126,7 @@ export class Controller {
     });
   }
 
+
   /**
    * CReate a new document.
    * 
@@ -134,10 +134,10 @@ export class Controller {
    * @param res service response
    * @param next next middleware
    */
-  create(req: Request, res: Response, next: NextFunction): void {
+  createSingle(req: Request, res: Response, next: NextFunction): void {
     //console.log(req.file);
     //console.log(req.body);
-
+    debugger;
     // build tag Id list
     if (!req.body.tags) {
       res.status(httpStatus.INTERNAL_SERVER_ERROR)
@@ -195,24 +195,25 @@ export class Controller {
   }
 
 
-  createMulti(req: Request, res: Response, next: NextFunction): void {
-    //console.log(req.file);
-    //console.log(req.body);
+  create(req: Request, res: Response, next: NextFunction): void {
 
-    
     // build tag Id list
     if (!req.body.tags) {
       res.status(httpStatus.INTERNAL_SERVER_ERROR)
-      .json(new TMDError("missing parameter 'tags"));
+        .json(new TMDError("missing parameter 'tags"));
       return;
     }
+    // prepare tags
     const tags = JSON.parse(req.body.tags);
 
     // process file argument
-    const files = req.file ? [req.file] : req.files;
-    
+    let files: Express.Multer.File[] = [];
+    if (req.file) {
+      files = [req.file];
+    } else if (req.files && Array.isArray(req.files)) {
+      files = req.files;
+    }
 
-    // TODO: rewrite this function to accept an array of files
     /**
        [{
           destination: "tmp/upload"
@@ -226,50 +227,28 @@ export class Controller {
       }, ...]
      */
 
-    
-
-    // Promisify fs.unlink
-    const unlink = (path) => new Promise((resolve, reject) => {
-      fs.unlink(path, (err) => {
-        if (err) reject(err);
-        else resolve();
-      });
+    // delete uploaded file from local FS
+    const deleteUploadedFile = (filePath: string) => new Promise((resolve, reject) => {
+      fs.unlink(filePath, (err) => {
+        if (err) {
+          L.warn(`failed to delete uploaded file : ${filePath}`);
+        }
+        resolve(true);  // always resolved
+      })
     });
 
-    // delete uploaded file from local FS
-    const deleteUploadFile = () => unlink(req.file.path)
-      .catch(err => {
-        L.error(`failed to delete uploaded file : ${req.file.path}`);
-        return Promise.resolve(); // always resolved
-      });
+    // TODO: Tags must be created first and documents inserted with tag ids
+    //TagsService.create(tags);
 
-    // send success Response
-    const sendSuccessResponse = (newDoc) => res
-      .status(httpStatus.CREATED)
-      .json(newDoc);
-
-    // send error Response
-    const sendErrorResponse = (err) => res
-      .status(httpStatus.INTERNAL_SERVER_ERROR)
-      .json(err);
-
-    files.map( file => DocumentsService
-      .create(tags,file)
-      .then( (newDoc => sendSuccessResponse(newDoc) )
-      .then( deleteUploadFile )
-      .catch( sendErrorResponse )
-    );
-
-    // create the document
-    DocumentsService
-      .create(tags, req.file)
-      .then(
-        (insertedDoc) => deleteUploadFile().then(() => sendSuccessResponse(insertedDoc)),
-        (error) => deleteUploadFile().then(() => sendErrorResponse(error))
-      );
+    Promise.all(
+      files.map(file => DocumentsService
+        .create(tags, file)
+        .then((newDoc) => deleteUploadedFile(file.path).then(() => newDoc))
+      )
+    )
+      .then(newDocs => res.status(httpStatus.CREATED).json(newDocs))
+      .catch(err => res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err));
   }
-
-
 }
 
 export default new Controller();

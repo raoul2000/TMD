@@ -68,7 +68,7 @@ const initSearch = (tagList = []) => {
         try {
             const queryTagIds = inputElement.value.split(',');
 
-            const url = new URL('http://localhost:3000/api/v1/documents');
+            const url = new URL('http://localhost:3001/api/v1/documents');
             url.search = new URLSearchParams({
                 "tags": queryTagIds
             });
@@ -161,6 +161,8 @@ const initImportDocument = (tagList = []) => {
     // user clicks on search button
     btnImportDoc.addEventListener('click', (ev) => {
         try {
+            const formData = new FormData();
+
             // process file content (upload) ////////////////////////////////////////
 
             const files = document.querySelector('[type=file]').files;
@@ -169,9 +171,9 @@ const initImportDocument = (tagList = []) => {
                 return;
             }
 
-            const formData = new FormData();
-            let file = files[0];
-            formData.append('content', file);
+            for(let i =0; i< files.length; i++) {
+                formData.append('content', files[i]);
+            }
 
             // Form tags ///////////////////////////////////////////////////////////
 
