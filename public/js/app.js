@@ -41,15 +41,12 @@ const refreshTagList = () => {
 };
 
 const previewDoc = (docId) => {
-    document.getElementById('iframe').src = `/api/v1/documents/${docId}/content`;
+    document.getElementById('iframe').src = docId ? `/api/v1/documents/${docId}/content` : "";
 };
 
 const initSearch = (tagList = []) => {
     const inputElement = document.getElementById('tags-search');
     const buttonSearch = document.getElementById('btn-search-by-tags');
-
-    // because tagify only accepts property 'value' and not 'name'
-    const tagsIfied = tagList.map(tag => ({ "value": tag.name, "id": tag.id }));
 
     const $inputTags = $('#tags-search').selectize({
         "create": false,
@@ -66,6 +63,7 @@ const initSearch = (tagList = []) => {
     // user clicks on search button
     buttonSearch.addEventListener('click', (ev) => {
         try {
+            previewDoc();
             const queryTagIds = inputElement.value.split(',');
 
             const url = new URL('http://localhost:3001/api/v1/documents');
@@ -130,9 +128,6 @@ const createTagsToSubmit = (tagsInput) => {
 const initImportDocument = (tagList = []) => {
     const inputElement = document.getElementById('tags-import');
     const btnImportDoc = document.getElementById('btn-import-doc');
-
-    // because tagify only accepts property 'value' and not 'name'
-    const tagsIfied = tagList.map(tag => ({ "value": tag.name, "id": tag.id }));
 
     const $inputTags = $('#tags-import').selectize({
         "create": true,
