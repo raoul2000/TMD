@@ -5,6 +5,8 @@ import Repository from '../../common/content/repository';
 import TagStore from '../../common/stores/tag.store';
 import TMDError from '../../common/error';
 import { arrayContainsArray } from '../../common/helpers';
+import TagsService from './tags.service';
+
 
 console.log(`loading ${__filename}`);
 
@@ -100,43 +102,16 @@ export class DocumentsService {
    */
   create(tags: TMD.Tag[], files: Express.Multer.File[]): Promise<TMD.Document[]> {
 
-    // TODO: we should validate tags schema ?
-
-    /**
-     * create new tags defined in the tag list and returns a liqst of tag ids
-     * @param tags list of tag 
-     */
-    const processTags = (tags: TMD.Tag[]): Promise<string[]> => {
-      // get from the tag list, all tags that are not already stored (i.e. they have no 'id' property)
-      const tagToInsert: TMD.Tag[] = tags.filter(tag => !tag.id);
-
-      if (tagToInsert.length) {
-        // there are tag to insert
-        return TagStore.insert(tagToInsert)
-          .catch(err => {
-            return Promise.reject(new TMDError('failed to insert tag', err));
-          })
-          .then(result => {
-            // for all inserted tags, keep only ids and concat to existing tags ids
-            const documentTagIds: string[] = (result as TMD.Tag[]).concat(tags.filter(tag => tag.id)).map(tag => tag.id);
-            return documentTagIds;
-          });
-      } else {
-        // no tag to insert : return the list of tag ids passed as argument
-        return Promise.resolve(tags.map(tag => tag.id));
-      }
-    };
-
     let documentTagIds: string[];
 
-    return processTags(tags)
+    return TagsService.createMissingTags(tags)
       .then(results => {
         documentTagIds = results;
         // we want to return complete tag objects (not only id) in the list of document
         // inserted and that we return to caller
         return TagStore.byId(documentTagIds) as Promise<TMD.Tag[]>
       })
-      .then(documentTags => Promise.all(files.map(file => Repository.write(file)))
+      .then(documentTags => Promise.all(files.map( file => Repository.write(file)))
         .then(contentMetadataList => {
 
           // prepare our document for insertion
