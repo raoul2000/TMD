@@ -215,5 +215,8 @@ const start = () => {
             initSearch(tagList);
             initImportDocument(tagList);
             initManageTags(tagList);
+
+            // display page (fadeIn - see CSS for body)
+            document.body.style.opacity='1';
         });
 };
