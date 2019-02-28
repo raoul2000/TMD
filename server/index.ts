@@ -6,12 +6,12 @@ import TagStore from './common/stores/tag.store';
 import DocumentStore from './common/stores/document.store';
 import path from 'path';
 
-
+/*
 conf.init({
   "port" : 7777,
   "basePath" : "C:\\dev\\ws\\lab\\TMD"
 });
-
+*/
 
 TagStore.initialize({ filename: path.join(__dirname,'../tmp/store/tag-store.json'), autoload: true });
 DocumentStore.initialize({ filename: path.join(__dirname,'../tmp/store/document-store.json'), autoload: true });
